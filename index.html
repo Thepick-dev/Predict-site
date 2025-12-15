@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WELCOME — GOALSTORM!</title>
+
+<!-- Bitmap font -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+/* =========================
+   NES SYSTEM PALETTE
+   ========================= */
+:root{
+  --bg:#000000;
+  --fg:#f8f8f8;
+  --cyan:#00eaff;
+  --yellow:#ffd600;
+  --pink:#ff4fd8;
+  --green:#2aff6b;
+  --red:#ff3b3b;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:'Press Start 2P', monospace;
+  -webkit-font-smoothing:none;
+  text-rendering:optimizeSpeed;
+}
+
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--fg);
+}
+
+/* =========================
+   CRT SCANLINES
+   ========================= */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.04),
+      rgba(255,255,255,0.04) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  opacity:.35;
+}
+
+/* =========================
+   HEADER
+   ========================= */
+header{
+  border-bottom:4px solid var(--cyan);
+  padding:16px 8px;
+  text-align:center;
+}
+
+/* NAV */
+nav{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  margin-bottom:12px;
+}
+
+nav a{
+  color:var(--fg);
+  text-decoration:none;
+  font-size:10px;
+  padding:8px 0;
+  border:2px solid var(--fg);
+}
+
+nav a.active{
+  background:var(--cyan);
+  color:#000;
+}
+
+/* TITLE */
+#pageTitle{
+  font-size:48px;
+  color:var(--yellow);
+  letter-spacing:2px;
+  text-shadow:2px 2px 0 #000;
+}
+
+#subTitle{
+  margin-top:8px;
+  font-size:12px;
+  color:var(--pink);
+}
+
+/* =========================
+   MAIN PANEL
+   ========================= */
+main{
+  max-width:320px;
+  margin:24px auto;
+  padding:8px;
+}
+
+.panel{
+  border:4px solid var(--fg);
+  padding:12px;
+}
+
+/* DOUBLE BORDER EFFECT */
+.panel-inner{
+  border:2px inset #000;
+  padding:12px;
+}
+
+/* =========================
+   MENU BUTTONS
+   ========================= */
+.menu{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+.menu a,
+.menu div{
+  text-align:center;
+  padding:10px 6px;
+  font-size:10px;
+  text-decoration:none;
+  color:var(--fg);
+  background:#111;
+  border:2px solid var(--fg);
+}
+
+/* COLOURS */
+.blue{ border-color:var(--cyan); }
+.yellow{ border-color:var(--yellow); }
+.pink{ border-color:var(--pink); }
+.green{ border-color:var(--green); }
+
+/* ACTIVE */
+.menu a.active{
+  background:var(--cyan);
+  color:#000;
+}
+
+/* DISABLED */
+.menu div{
+  opacity:.65;
+}
+
+/* PRESS EFFECT */
+.menu a:active{
+  transform:translate(1px,1px);
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+footer{
+  margin-top:24px;
+  padding:12px;
+  text-align:center;
+  border-top:4px solid var(--cyan);
+}
+
+footer a{
+  color:var(--yellow);
+  font-size:8px;
+}
+
+/* =========================
+   MOBILE SAFETY
+   ========================= */
+@media (max-width:480px){
+  #pageTitle{ font-size:40px; }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <nav>
+    <a href="index.html" class="active">HOME</a>
+    <a href="predict.html">PICK</a>
+    <a href="standings.html">SCORES</a>
+    <a href="rules.html">RULES</a>
+  </nav>
+
+  <div id="pageTitle">GOALSTORM!</div>
+  <div id="subTitle">WORLD CUP 2026</div>
+</header>
+
+<main>
+  <div class="panel">
+    <div class="panel-inner">
+      <div class="menu">
+        <a class="blue active" href="WELCOME.html">WELCOME</a>
+        <div class="yellow">COMPETITION PREVIEW</div>
+        <div class="pink">ROUND 1 PICKS</div>
+        <div class="green">ROUND 1 RESULTS</div>
+        <div class="blue">ROUND 1 ROUND UP</div>
+        <div class="yellow">ROUND 2 PICKS</div>
+        <div class="pink">ROUND 2 RESULTS</div>
+        <div class="green">ROUND 2 ROUND UP</div>
+        <div class="blue">ROUND 3 PICKS</div>
+        <div class="yellow">ROUND 3 RESULTS</div>
+        <div class="pink">ROUND 3 ROUND UP</div>
+        <div class="green">WINNERS</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <a href="privacy.html">PRIVACY POLICY</a>
+</footer>
+
+<!-- NES STYLE AUDIO BOOT -->
+<audio id="goAudio" src="assets/go.mp3" preload="auto" loop></audio>
+
+<script>
+(function(){
+  const a=document.getElementById('goAudio');
+  const play=()=>a.play().catch(()=>{});
+  window.addEventListener('load',play);
+  window.addEventListener('click',play,{once:true});
+  window.addEventListener('keydown',play,{once:true});
+})();
+</script>
+
+</body>
+</html>
