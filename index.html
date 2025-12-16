@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Welcome — GOALSTORM!</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Jersey+10+Charted&family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0A0A1A;
+  --cyan:#00F6FF;
+  --yellow:#FFD60A;
+  --pink:#FF2FC7;
+  --third-pink:#FF6EC7;
+  --muted:#F7F7F2;
+  --card-border: rgba(0,246,255,0.06);
+  font-family:'Press Start 2P',monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;background:var(--bg) url('football-pattern.png') repeat center/cover;color:var(--muted);}
+
+header.site-header{position:static;padding:12px 0;}
+nav.main-nav{display:flex;width:100%;justify-content:space-between;background:transparent;border-bottom:0;padding:6px 0;}
+.nav-link{flex:1;text-align:center;padding:14px 0;text-decoration:none;color:var(--muted);transition:all .18s;font-size:11px;cursor:pointer;}
+.nav-link.active{ color:var(--cyan); text-shadow:0 0 14px rgba(0,246,255,1); }
+
+#pageTitle{
+  font-family:'Jersey 10',sans-serif;
+  font-size:92px;
+  font-style:italic;
+  margin:6px 0 6px;
+  color:var(--yellow);
+  text-align:center;
+}
+
+#subTitle{
+  font-family:'Jersey 10 Charted',sans-serif;
+  font-size:20px;
+  color:var(--third-pink);
+  margin:6px 0 0;
+  text-align:center;
+}
+
+main{max-width:960px;margin:24px auto;padding:12px;text-align:center;}
+
+.form-card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+  border:6px solid var(--card-border);
+  padding:18px;
+  border-radius:12px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.nav-boxes{display:flex;flex-direction:column;gap:12px;align-items:center;margin-top:8px;}
+.nav-box{width:260px;min-height:44px;border-radius:8px;display:block;text-decoration:none;position:relative;padding:0;}
+.nav-link-box{
+  display:flex;align-items:center;justify-content:center;height:100%;width:100%;
+  border-radius:8px;background:#05050b;color:var(--muted);font-family:'Press Start 2P',monospace;font-size:11px;
+  text-decoration:none;padding:12px;border:2px solid rgba(255,255,255,0.02);
+  box-shadow:none;
+  transition:all .16s;
+}
+.border-blue .nav-link-box{ border-color: rgba(0,246,255,1); }
+.border-yellow .nav-link-box{ border-color: rgba(255,214,10,1); }
+.border-pink .nav-link-box{ border-color: var(--third-pink); }
+.border-green .nav-link-box{ border-color: rgba(42,255,107,1); }
+
+.nav-box.active .nav-link-box{
+  background: var(--cyan);
+  color:#0A0A1A;
+  border-color: var(--cyan);
+}
+
+.nav-box.disabled .nav-link-box{ cursor:default; pointer-events:none; opacity:1; }
+.nav-link-box:hover{ transform:translateY(-2px); filter:brightness(1.05); }
+
+footer{border-top:4px solid rgba(0,246,255,0.03);padding:12px 0;text-align:center;}
+footer a{color:var(--yellow);text-decoration:underline;font-size:10px;}
+
+@media (max-width:520px){
+  .nav-box{width:100%;}
+}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <nav class="main-nav" aria-label="Main navigation">
+    <a class="nav-link active" href="index.html">HOME</a>
+    <a class="nav-link" href="predict.html">PICK</a>
+    <a class="nav-link" href="standings.html">SCORES</a>
+    <a class="nav-link" href="rules.html">RULES</a>
+  </nav>
+  <div style="text-align:center;margin-top:6px;">
+    <div id="pageTitle">GOALSTORM!</div>
+    <div id="subTitle">WORLD CUP 2026</div>
+  </div>
+</header>
+
+<main>
+  <div class="form-card" id="welcomeCard">
+    <div class="nav-boxes">
+      <a class="nav-box border-blue active" href="WELCOME.html"><div class="nav-link-box">WELCOME</div></a>
+      <div class="nav-box border-yellow disabled"><div class="nav-link-box">COMPETITION PREVIEW</div></div>
+      <div class="nav-box border-pink disabled"><div class="nav-link-box">ROUND 1 PICKS</div></div>
+      <div class="nav-box border-green disabled"><div class="nav-link-box">ROUND 1 RESULTS</div></div>
+      <div class="nav-box border-blue disabled"><div class="nav-link-box">ROUND 1 ROUND UP</div></div>
+      <div class="nav-box border-yellow disabled"><div class="nav-link-box">ROUND 2 PICKS</div></div>
+      <div class="nav-box border-pink disabled"><div class="nav-link-box">ROUND 2 RESULTS</div></div>
+      <div class="nav-box border-green disabled"><div class="nav-link-box">ROUND 2 ROUND UP</div></div>
+      <div class="nav-box border-blue disabled"><div class="nav-link-box">ROUND 3 PICKS</div></div>
+      <div class="nav-box border-yellow disabled"><div class="nav-link-box">ROUND 3 RESULTS</div></div>
+      <div class="nav-box border-pink disabled"><div class="nav-link-box">ROUND 3 ROUND UP</div></div>
+      <div class="nav-box border-green disabled"><div class="nav-link-box">WINNERS</div></div>
+    </div>
+  </div>
+</main>
+
+<footer><a href="privacy.html">Privacy Policy</a></footer>
+
+<audio id="goAudio" src="assets/go.mp3" loop preload="auto" playsinline autoplay></audio>
+
+<script>
+'use strict';
+(function(){
+  const audio = document.getElementById('goAudio');
+
+  function tryPlayNow() {
+    audio.play().catch(()=>{});
+  }
+
+  function resumeOnInteraction() {
+    audio.play().catch(()=>{});
+    window.removeEventListener('click', resumeOnInteraction);
+    window.removeEventListener('keydown', resumeOnInteraction);
+    window.removeEventListener('touchstart', resumeOnInteraction);
+  }
+
+  function onVisibility() {
+    if (!document.hidden) {
+      audio.play().catch(()=>{});
+    }
+  }
+
+  window.addEventListener('load', tryPlayNow);
+  window.addEventListener('click', resumeOnInteraction, {once:true});
+  window.addEventListener('keydown', resumeOnInteraction, {once:true});
+  window.addEventListener('touchstart', resumeOnInteraction, {once:true});
+  document.addEventListener('visibilitychange', onVisibility);
+})();
+</script>
+</body>
+</html>
