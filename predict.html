@@ -226,61 +226,34 @@ function createGroupEl(i,teams){
 function renderGroups(){ groupsGrid.innerHTML=''; GROUPS.forEach((g,i)=>groupsGrid.appendChild(createGroupEl(i,g))); }
 renderGroups();
 
+/* Toggle logic */
 function toggleSecond(group,team,btn){
-  if(state.thirdPicksIndex[group]===team){
-    flashInstruction('This team is already selected as 3rd-place');
-    return;
-  }
-  if(state.secondPicks[group]===team){
-    state.secondPicks[group]=null;
-    btn.classList.remove('selected-2');
-    btn.setAttribute('aria-pressed','false');
-  } else {
-    state.secondPicks[group]=team;
-    document.querySelectorAll(`.team-btn[data-group="${group}"].selected-2`).forEach(b=>b.classList.remove('selected-2'));
-    btn.classList.add('selected-2');
-    btn.setAttribute('aria-pressed','true');
-  }
+  if(state.thirdPicksIndex[group]===team){ flashInstruction('This team is already selected as 3rd-place'); return; }
+  if(state.secondPicks[group]===team){ state.secondPicks[group]=null; btn.classList.remove('selected-2'); btn.setAttribute('aria-pressed','false'); }
+  else{ state.secondPicks[group]=team; document.querySelectorAll(`.team-btn[data-group="${group}"].selected-2`).forEach(b=>b.classList.remove('selected-2')); btn.classList.add('selected-2'); btn.setAttribute('aria-pressed','true'); }
   checkForSubmit();
 }
 
 function toggleThird(group,team,btn){
-  if(state.secondPicks[group]===team){
-    flashInstruction('This team is already selected as 2nd-place');
-    return;
-  }
+  if(state.secondPicks[group]===team){ flashInstruction('This team is already selected as 2nd-place'); return; }
   const totalThird = state.thirdPicksIndex.filter(x=>x!==null).length;
-  if(state.thirdPicksIndex[group]===team){
-    state.thirdPicksIndex[group]=null;
-    btn.classList.remove('selected-3');
-    btn.setAttribute('aria-pressed','false');
-  } else {
-    if(totalThird>=MAX_THIRD){
-      flashInstruction('You have already selected 8 third-place teams');
-      return;
-    }
-    if(state.thirdPicksIndex[group]!==null){
-      const prevBtn = document.querySelector(`.team-btn[data-group="${group}"][aria-pressed="true"].selected-3`);
-      if(prevBtn) prevBtn.classList.remove('selected-3');
-    }
-    state.thirdPicksIndex[group]=team;
-    btn.classList.add('selected-3');
-    btn.setAttribute('aria-pressed','true');
+  if(state.thirdPicksIndex[group]===team){ state.thirdPicksIndex[group]=null; btn.classList.remove('selected-3'); btn.setAttribute('aria-pressed','false'); }
+  else{
+    if(totalThird>=MAX_THIRD){ flashInstruction('You have already selected 8 third-place teams'); return; }
+    if(state.thirdPicksIndex[group]!==null){ const prevBtn=document.querySelector(`.team-btn[data-group="${group}"][aria-pressed="true"].selected-3`); if(prevBtn) prevBtn.classList.remove('selected-3'); }
+    state.thirdPicksIndex[group]=team; btn.classList.add('selected-3'); btn.setAttribute('aria-pressed','true');
   }
   checkForSubmit();
 }
 
 function checkForSubmit(){
-  const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!=='';
-  const secondComplete = state.secondPicks.filter(x=>x!==null).length===GROUPS.length;
-  const thirdComplete = state.thirdPicksIndex.filter(x=>x!==null).length===MAX_THIRD;
+  const allFilled=nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!=='';
+  const secondComplete=state.secondPicks.filter(x=>x!==null).length===GROUPS.length;
+  const thirdComplete=state.thirdPicksIndex.filter(x=>x!==null).length===MAX_THIRD;
   setSubmitState(allFilled && secondComplete && thirdComplete);
 }
 
-function setSubmitState(enabled){
-  submitBtn.disabled=!enabled;
-  if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit');
-}
+function setSubmitState(enabled){ submitBtn.disabled=!enabled; if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit'); }
 
 submitBtn.addEventListener('click',()=>{
   if(submitBtn.disabled) return;
@@ -291,4 +264,18 @@ submitBtn.addEventListener('click',()=>{
     combo:comboSelect.value,
     goals:goalsInput.value,
     seconds:state.secondPicks.map((t,i)=>t!==null?GROUPS[i][t]:null),
-    thirds: state.thirdPicksIndex.map((t,i)=>t!==null?GROUPS[i][t]:
+    thirds: state.thirdPicksIndex.map((t,i)=>t!==null?GROUPS[i][t]:null)
+  };
+  submitBtn.disabled=true;
+  fetch(APPS_SCRIPT_URL, { method:'POST', body:JSON.stringify(payload), headers:{'Content-Type':'application/json'} })
+    .then(r=>r.json())
+    .then(res=>{ alert('Picks submitted successfully'); submitBtn.disabled=false; })
+    .catch(err=>{ alert('Error submitting picks'); submitBtn.disabled=false; });
+});
+
+clearBtn.addEventListener('click',()=>{
+  state.secondPicks.fill(null); state.thirdPicksIndex.fill(null); renderGroups(); nameInput.value=''; emailInput.value=''; pinInput.value=''; comboSelect.value=''; goalsInput.value=''; setSubmitState(false);
+});
+</script>
+</body>
+</html>
