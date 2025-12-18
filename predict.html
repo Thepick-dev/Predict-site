@@ -143,7 +143,7 @@ footer a{color:var(--yellow);text-decoration:underline;font-size:10px;}
 <script>
 'use strict';
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxhiJveobommPVUy5nfUUjtrkYOw8gE20bFOZqcTTRxHKxzUKnexvkKWEwZ0L-0/exec";
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhiJveobommPVUy5nfUUjtrkYOw8gE20bFOZqcTTRxHKxzUKnexvkKWEwZ0L-0 chn_d7w/exec';
 
 const GROUPS = [
   ["MEXICO 🇲🇽","SOUTH AFRICA 🇿🇦","SOUTH KOREA 🇰🇷","DEN/MAC/CZE/IRL"],
@@ -271,7 +271,7 @@ function toggleThird(group,team,btn){
 }
 
 function checkForSubmit(){
-  const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!=='' ;
+  const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!=='';
   const secondComplete = state.secondPicks.filter(x=>x!==null).length===GROUPS.length;
   const thirdComplete = state.thirdPicksIndex.filter(x=>x!==null).length===MAX_THIRD;
   setSubmitState(allFilled && secondComplete && thirdComplete);
@@ -282,10 +282,8 @@ function setSubmitState(enabled){
   if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit');
 }
 
-/* ---------- Submission to Apps Script ---------- */
-submitBtn.addEventListener('click', async ()=>{
+submitBtn.addEventListener('click',()=>{
   if(submitBtn.disabled) return;
-
   const payload={
     username:nameInput.value.trim(),
     email:emailInput.value.trim(),
@@ -293,4 +291,4 @@ submitBtn.addEventListener('click', async ()=>{
     combo:comboSelect.value,
     goals:goalsInput.value,
     seconds:state.secondPicks.map((t,i)=>t!==null?GROUPS[i][t]:null),
-   
+    thirds: state.thirdPicksIndex.map((t,i)=>t!==null?GROUPS[i][t]:
