@@ -143,8 +143,6 @@ footer a{color:var(--yellow);text-decoration:underline;font-size:10px;}
 <script>
 'use strict';
 
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzz4VEFkU6Y0xddQrA9v6wOJBag21RuqZtNO3iuq86ZkWwAJP0ebapzVBuc1hpbJ45K/exec';
-
 const GROUPS = [
   ["MEXICO 🇲🇽","SOUTH AFRICA 🇿🇦","SOUTH KOREA 🇰🇷","DEN/MAC/CZE/IRL"],
   ["CANADA 🇨🇦","ITA/NIR/WAL/BOS","QATAR 🇶🇦","SWITZERLAND 🇨🇭"],
@@ -161,11 +159,7 @@ const GROUPS = [
 ];
 
 const MAX_THIRD = 8;
-
-const state = {
-  secondPicks: Array(GROUPS.length).fill(null),
-  thirdPicksIndex: Array(GROUPS.length).fill(null)
-};
+const state = { secondPicks: Array(GROUPS.length).fill(null), thirdPicksIndex: Array(GROUPS.length).fill(null) };
 
 const groupsGrid=document.getElementById('groupsGrid');
 const instructionEl=document.getElementById('instruction');
@@ -181,7 +175,7 @@ function flashInstruction(msg){
   const orig=instructionEl.textContent;
   instructionEl.textContent=msg;
   instructionEl.style.color='white';
-  setTimeout(()=>{ instructionEl.textContent=orig; instructionEl.style.color='var(--yellow)'; },1200);
+  setTimeout(()=>{ instructionEl.textContent=orig; instructionEl.style.color='var(--yellow)'; },2000);
 }
 
 function createGroupEl(i,teams){
@@ -191,34 +185,15 @@ function createGroupEl(i,teams){
   g.innerHTML=`<h4>GROUP ${i+1}</h4><div class="team-list"></div>`;
   const list=g.querySelector('.team-list');
   teams.forEach((team,idx)=>{
-    const row=document.createElement('div');
-    row.className='team-row';
-    const nameSpan=document.createElement('span');
-    nameSpan.className='team-name';
-    nameSpan.textContent=team;
-
-    const btn2=document.createElement('button');
-    btn2.className='team-btn';
-    btn2.type='button';
-    btn2.textContent='2nd';
-    btn2.setAttribute('data-group',i);
-    btn2.setAttribute('data-index',idx);
-    btn2.setAttribute('aria-pressed','false');
+    const row=document.createElement('div'); row.className='team-row';
+    const nameSpan=document.createElement('span'); nameSpan.className='team-name'; nameSpan.textContent=team;
+    const btn2=document.createElement('button'); btn2.className='team-btn'; btn2.type='button'; btn2.textContent='2nd';
+    btn2.setAttribute('data-group',i); btn2.setAttribute('data-index',idx); btn2.setAttribute('aria-pressed','false');
     btn2.addEventListener('click',()=>toggleSecond(i,idx,btn2));
-
-    const btn3=document.createElement('button');
-    btn3.className='team-btn';
-    btn3.type='button';
-    btn3.textContent='3rd';
-    btn3.setAttribute('data-group',i);
-    btn3.setAttribute('data-index',idx);
-    btn3.setAttribute('aria-pressed','false');
+    const btn3=document.createElement('button'); btn3.className='team-btn'; btn3.type='button'; btn3.textContent='3rd';
+    btn3.setAttribute('data-group',i); btn3.setAttribute('data-index',idx); btn3.setAttribute('aria-pressed','false');
     btn3.addEventListener('click',()=>toggleThird(i,idx,btn3));
-
-    row.appendChild(nameSpan);
-    row.appendChild(btn2);
-    row.appendChild(btn3);
-    list.appendChild(row);
+    row.appendChild(nameSpan); row.appendChild(btn2); row.appendChild(btn3); list.appendChild(row);
   });
   return g;
 }
@@ -227,63 +202,34 @@ function renderGroups(){ groupsGrid.innerHTML=''; GROUPS.forEach((g,i)=>groupsGr
 renderGroups();
 
 function toggleSecond(group,team,btn){
-  if(state.thirdPicksIndex[group]===team){
-    flashInstruction('This team is already selected as 3rd-place');
-    return;
-  }
-  if(state.secondPicks[group]===team){
-    state.secondPicks[group]=null;
-    btn.classList.remove('selected-2');
-    btn.setAttribute('aria-pressed','false');
-  } else {
-    state.secondPicks[group]=team;
-    document.querySelectorAll(`.team-btn[data-group="${group}"].selected-2`).forEach(b=>b.classList.remove('selected-2'));
-    btn.classList.add('selected-2');
-    btn.setAttribute('aria-pressed','true');
-  }
+  if(state.thirdPicksIndex[group]===team){ flashInstruction('Already selected as 3rd-place'); return; }
+  if(state.secondPicks[group]===team){ state.secondPicks[group]=null; btn.classList.remove('selected-2'); btn.setAttribute('aria-pressed','false'); }
+  else { state.secondPicks[group]=team; document.querySelectorAll(`.team-btn[data-group="${group}"].selected-2`).forEach(b=>b.classList.remove('selected-2')); btn.classList.add('selected-2'); btn.setAttribute('aria-pressed','true'); }
   checkForSubmit();
 }
 
 function toggleThird(group,team,btn){
-  if(state.secondPicks[group]===team){
-    flashInstruction('This team is already selected as 2nd-place');
-    return;
-  }
+  if(state.secondPicks[group]===team){ flashInstruction('Already selected as 2nd-place'); return; }
   const totalThird = state.thirdPicksIndex.filter(x=>x!==null).length;
-  if(state.thirdPicksIndex[group]===team){
-    state.thirdPicksIndex[group]=null;
-    btn.classList.remove('selected-3');
-    btn.setAttribute('aria-pressed','false');
-  } else {
-    if(totalThird>=MAX_THIRD){
-      flashInstruction('You have already selected 8 third-place teams');
-      return;
-    }
-    if(state.thirdPicksIndex[group]!==null){
-      const prevBtn = document.querySelector(`.team-btn[data-group="${group}"][aria-pressed="true"].selected-3`);
-      if(prevBtn) prevBtn.classList.remove('selected-3');
-    }
-    state.thirdPicksIndex[group]=team;
-    btn.classList.add('selected-3');
-    btn.setAttribute('aria-pressed','true');
-  }
+  if(state.thirdPicksIndex[group]===team){ state.thirdPicksIndex[group]=null; btn.classList.remove('selected-3'); btn.setAttribute('aria-pressed','false'); }
+  else { if(totalThird>=MAX_THIRD){ flashInstruction('Already selected 8 third-place teams'); return; }
+    if(state.thirdPicksIndex[group]!==null){ const prevBtn = document.querySelector(`.team-btn[data-group="${group}"][aria-pressed="true"].selected-3`); if(prevBtn) prevBtn.classList.remove('selected-3'); }
+    state.thirdPicksIndex[group]=team; btn.classList.add('selected-3'); btn.setAttribute('aria-pressed','true'); }
   checkForSubmit();
 }
 
 function checkForSubmit(){
-  const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!=='' ;
+  const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!==''; 
   const secondComplete = state.secondPicks.filter(x=>x!==null).length===GROUPS.length;
   const thirdComplete = state.thirdPicksIndex.filter(x=>x!==null).length===MAX_THIRD;
   setSubmitState(allFilled && secondComplete && thirdComplete);
 }
 
-function setSubmitState(enabled){
-  submitBtn.disabled=!enabled;
-  if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit');
-}
+function setSubmitState(enabled){ submitBtn.disabled=!enabled; if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit'); }
 
-submitBtn.addEventListener('click',async ()=>{
+submitBtn.addEventListener('click', async ()=>{
   if(submitBtn.disabled) return;
+
   const payload={
     username:nameInput.value.trim(),
     email:emailInput.value.trim(),
@@ -293,28 +239,24 @@ submitBtn.addEventListener('click',async ()=>{
     seconds:state.secondPicks.map((t,i)=>t!==null?GROUPS[i][t]:null),
     thirds: state.thirdPicksIndex.map((t,i)=>t!==null?GROUPS[i][t]:null).filter(t=>t!==null)
   };
-  try{
-    const res = await fetch(APPS_SCRIPT_URL,{
+
+  try {
+    const response = await fetch('https://script.google.com/macros/s/AKfycbzjVHo64ZOIpk95eXG00XvhZ7oCJpGiFMifVH2Td8EYdcqTfRvg-uzUOto-llLekJnM/exec',{
       method:'POST',
-      body:JSON.stringify(payload),
-      headers:{'Content-Type':'application/json'}
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
     });
-    const data = await res.json();
-    if(data.status==='success'){
-      flashInstruction('SUBMITTED! THANKS');
-    } else {
-      flashInstruction(`ERROR: ${data.message||'Unknown error'}`);
-      console.error('Submission error:', data);
-    }
+    const result = await response.json();
+    if(result.status==="success"){ flashInstruction('SUBMITTED! THANKS'); clearBtn.click(); }
+    else { flashInstruction('ERROR: ' + result.message); }
   } catch(err){
-    flashInstruction(`ERROR: ${err.message}`);
-    console.error('Submission exception:', err);
+    flashInstruction('Submission failed: ' + err.message);
+    console.error(err);
   }
 });
 
 clearBtn.addEventListener('click',()=>{
-  state.secondPicks.fill(null);
-  state.thirdPicksIndex.fill(null);
+  state.secondPicks.fill(null); state.thirdPicksIndex.fill(null);
   document.querySelectorAll('.team-btn').forEach(b=>b.classList.remove('selected-2','selected-3'));
   nameInput.value=''; emailInput.value=''; pinInput.value=''; comboSelect.value=''; goalsInput.value='';
   setSubmitState(false);
