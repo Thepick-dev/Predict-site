@@ -3,121 +3,84 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Predict — GOALSTORM!</title>
+<title>Welcome — GOALSTORM!</title>
 
 <!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Orbitron:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Orbitron:wght@400;700&family=Press+Start+2P&family=Tourney&display=swap" rel="stylesheet">
 
 <style>
-:root{
-  --bg:#0A0A1A;
-  --cyan:#00F6FF;
-  --yellow:#FFD60A;
-  --pink:#FF2FC7;
-  --third-pink:#FF6EC7;
-  --muted:#F7F7F2;
-  --nav-text:var(--muted);
-  --input-border: rgba(0,246,255,0.08);
-  --card-border: rgba(0,246,255,0.06);
-  font-family:'Press Start 2P',monospace;
+:root {
+    --yellow: #FFD700;
+    --blue: #007BFF;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;background:var(--bg);color:var(--muted);}
-body.crt::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  background:
-    repeating-linear-gradient(0deg, rgba(255,255,255,.03), rgba(255,255,255,.03) 1px, transparent 1px, transparent 3px),
-    radial-gradient(ellipse at center, rgba(255,255,255,.06), rgba(0,0,0,.35));
-  mix-blend-mode:overlay;
-}
-/* ... all previous CSS unchanged ... */
+body { font-family: 'Press Start 2P', cursive; background:#000; color:var(--yellow); margin:0; padding:0; }
+h1, h2, h3, h4 { margin:0; }
+#groupsGrid { display:grid; gap:10px; padding:10px; }
+.group { border:1px solid var(--yellow); padding:5px; }
+.team-row { display:flex; justify-content:space-between; margin:2px 0; }
+.team-btn { background:#111; border:1px solid var(--yellow); color:var(--yellow); cursor:pointer; padding:2px 6px; }
+.team-btn.selected-2 { background:#FFD700; color:#000; }
+.team-btn.selected-3 { background:#FF8C00; color:#000; }
+#instruction { color:var(--yellow); margin:10px 0; }
+#submitBtn.lit { background:var(--yellow); color:#000; cursor:pointer; }
 </style>
 </head>
-<body class="crt">
-<header class="site-header">
-  <nav class="main-nav" aria-label="Main navigation">
-    <a class="nav-link" href="index.html">HOME</a>
-    <a class="nav-link active" href="predict.html">PICK</a>
-    <a class="nav-link" href="standings.html">SCORES</a>
-    <a class="nav-link" href="rules.html">RULES</a>
-  </nav>
-  <div style="text-align:center;margin-top:6px;">
-    <div id="pageTitle">GOALSTORM!</div>
-    <div id="subTitle">WORLD CUP 2026</div>
-  </div>
-</header>
+<body>
 
-<main>
-  <div class="form-card" id="predictCard">
-    <div class="row" id="inputsRow">
-      <div class="input">
-        <label for="nameInput">USERNAME</label>
-        <input id="nameInput" type="text" placeholder="YOUR USERNAME" />
-      </div>
-      <div class="input">
-        <label for="emailInput">EMAIL</label>
-        <input id="emailInput" type="email" placeholder="EMAIL@EXAMPLE.COM" />
-      </div>
-      <div class="input">
-        <label for="pinInput">4 DIGIT PIN</label>
-        <input id="pinInput" type="text" maxlength="4" inputmode="numeric" pattern="\d{4}" placeholder="1234" />
-      </div>
-      <div class="input center">
-        <label for="comboSelect">Pick the combination you think will score the most goals in the whole tournament</label>
-        <select id="comboSelect">
-          <option value="">-- SELECT COMBO --</option>
-          ${Array.from({length:30},(_,i)=>`<option>Combo ${i+1}</option>`).join('')}
-        </select>
-      </div>
-      <div class="input">
-        <label for="goalsInput">How many goals will be scored in the group stage? (Tiebreaker)</label>
-        <input id="goalsInput" type="number" min="0" placeholder="TOTAL GOALS" />
-      </div>
-    </div>
+<h1>GOALSTORM!</h1>
+<div id="instruction">Select your 2nd and 3rd place teams for each group.</div>
 
-    <div class="top-instruction" id="instruction">Pick the team to come 2nd in each group and THEN the 8 teams to qualify in 3rd place</div>
+<div id="groupsGrid"></div>
 
-    <div class="controls">
-      <button id="clearBtn" class="button-clear">CLEAR</button>
-      <button id="submitBtn" class="submit-btn">SUBMIT</button>
-    </div>
+<div style="margin:10px 0;">
+    <input type="text" id="nameInput" placeholder="Name" style="margin-right:5px;">
+    <input type="email" id="emailInput" placeholder="Email" style="margin-right:5px;">
+    <input type="text" id="pinInput" placeholder="PIN (4 digits)" maxlength="4" style="width:70px;">
+</div>
 
-    <div class="groups-grid" id="groupsGrid"></div>
-  </div>
-</main>
+<div style="margin:10px 0;">
+    <select id="comboSelect">
+        <option value="">Select combo</option>
+        <option value="A">Combo A</option>
+        <option value="B">Combo B</option>
+    </select>
+    <input type="number" id="goalsInput" placeholder="Total goals">
+</div>
 
-<footer><a href="privacy.html">Privacy Policy</a></footer>
+<div style="margin:10px 0;">
+    <button id="clearBtn">CLEAR</button>
+    <button id="submitBtn" disabled>SUBMIT</button>
+</div>
 
 <script type="module">
 'use strict';
 
-// Supabase client
+// Supabase setup
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
 const SUPABASE_URL = 'https://crxporwegppqlpiarfoz.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNyeHBvcndlZ3BwcWxwaWFyZm96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYxMzkxNTcsImV4cCI6MjA4MTcxNTE1N30.r-Lub9YwVpppewom3pbDRzyo7-m691369sOvSjWUU1E';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Data & state
 const GROUPS = [
-  ["MEXICO 🇲🇽","SOUTH AFRICA 🇿🇦","SOUTH KOREA 🇰🇷","DEN/MAC/CZE/IRL"],
-  ["CANADA 🇨🇦","ITA/NIR/WAL/BOS","QATAR 🇶🇦","SWITZERLAND 🇨🇭"],
-  ["BRAZIL 🇧🇷","MOROCCO 🇲🇦","HAITI 🇭🇹","SCOTLAND 🏴"],
-  ["USA 🇺🇸","PARAGUAY 🇵🇾","AUSTRALIA 🇦🇺","TUR/ROU/SVK/KOS"],
-  ["GERMANY 🇩🇪","CURAÇAO 🇨🇼","IVORY COAST 🇨🇮","ECUADOR 🇪🇨"],
-  ["NETHERLANDS 🇳🇱","JAPAN 🇯🇵","UKR/SWE/POL/ALB","TUNISIA 🇹🇳"],
-  ["BELGIUM 🇧🇪","EGYPT 🇪🇬","IRAN 🇮🇷","NEW ZEALAND 🇳🇿"],
-  ["SPAIN 🇪🇸","CAPE VERDE 🇨🇻","SAUDI ARABIA 🇸🇦","URUGUAY 🇺🇾"],
-  ["FRANCE 🇫🇷","SENEGAL 🇸🇳","BOL/SUR/IRQ","NORWAY 🇳🇴"],
-  ["ARGENTINA 🇦🇷","ALGERIA 🇩🇿","AUSTRIA 🇦🇹","JORDAN 🇯🇴"],
-  ["PORTUGAL 🇵🇹","JAM/NCL/DRC","UZBEKISTAN 🇺🇿","COLOMBIA 🇨🇴"],
-  ["ENGLAND 🏴","CROATIA 🇭🇷","GHANA 🇬🇭","PANAMA 🇵🇦"]
+    ["MEXICO 🇲🇽","SOUTH AFRICA 🇿🇦","SOUTH KOREA 🇰🇷","DEN/MAC/CZE/IRL"],
+    ["CANADA 🇨🇦","ITA/NIR/WAL/BOS","QATAR 🇶🇦","SWITZERLAND 🇨🇭"],
+    ["BRAZIL 🇧🇷","MOROCCO 🇲🇦","HAITI 🇭🇹","SCOTLAND 🏴"],
+    ["USA 🇺🇸","PARAGUAY 🇵🇾","AUSTRALIA 🇦🇺","TUR/ROU/SVK/KOS"],
+    ["GERMANY 🇩🇪","CURAÇAO 🇨🇼","IVORY COAST 🇨🇮","ECUADOR 🇪🇨"],
+    ["NETHERLANDS 🇳🇱","JAPAN 🇯🇵","UKR/SWE/POL/ALB","TUNISIA 🇹🇳"],
+    ["BELGIUM 🇧🇪","EGYPT 🇪🇬","IRAN 🇮🇷","NEW ZEALAND 🇳🇿"],
+    ["SPAIN 🇪🇸","CAPE VERDE 🇨🇻","SAUDI ARABIA 🇸🇦","URUGUAY 🇺🇾"],
+    ["FRANCE 🇫🇷","SENEGAL 🇸🇳","BOL/SUR/IRQ","NORWAY 🇳🇴"],
+    ["ARGENTINA 🇦🇷","ALGERIA 🇩🇿","AUSTRIA 🇦🇹","JORDAN 🇯🇴"],
+    ["PORTUGAL 🇵🇹","JAM/NCL/DRC","UZBEKISTAN 🇺🇿","COLOMBIA 🇨🇴"],
+    ["ENGLAND 🏴","CROATIA 🇭🇷","GHANA 🇬🇭","PANAMA 🇵🇦"]
 ];
-
 const MAX_THIRD = 8;
 const state = { secondPicks: Array(GROUPS.length).fill(null), thirdPicksIndex: Array(GROUPS.length).fill(null) };
 
+// DOM references
 const groupsGrid=document.getElementById('groupsGrid');
 const instructionEl=document.getElementById('instruction');
 const clearBtn=document.getElementById('clearBtn');
@@ -128,94 +91,128 @@ const pinInput=document.getElementById('pinInput');
 const comboSelect=document.getElementById('comboSelect');
 const goalsInput=document.getElementById('goalsInput');
 
+// Flash instruction message
 function flashInstruction(msg){
-  const orig=instructionEl.textContent;
-  instructionEl.textContent=msg;
-  instructionEl.style.color='white';
-  setTimeout(()=>{ instructionEl.textContent=orig; instructionEl.style.color='var(--yellow)'; },2000);
+    const orig=instructionEl.textContent;
+    instructionEl.textContent=msg;
+    instructionEl.style.color='white';
+    setTimeout(()=>{
+        instructionEl.textContent=orig;
+        instructionEl.style.color='var(--yellow)';
+    },2000);
 }
 
-// --- Group rendering and toggles remain unchanged ---
+// Create group elements
 function createGroupEl(i,teams){
-  const g=document.createElement('div');
-  g.className='group';
-  g.setAttribute('data-group',i);
-  g.innerHTML=`<h4>GROUP ${i+1}</h4><div class="team-list"></div>`;
-  const list=g.querySelector('.team-list');
-  teams.forEach((team,idx)=>{
-    const row=document.createElement('div'); row.className='team-row';
-    const nameSpan=document.createElement('span'); nameSpan.className='team-name'; nameSpan.textContent=team;
-    const btn2=document.createElement('button'); btn2.className='team-btn'; btn2.type='button'; btn2.textContent='2nd';
-    btn2.setAttribute('data-group',i); btn2.setAttribute('data-index',idx); btn2.setAttribute('aria-pressed','false');
-    btn2.addEventListener('click',()=>toggleSecond(i,idx,btn2));
-    const btn3=document.createElement('button'); btn3.className='team-btn'; btn3.type='button'; btn3.textContent='3rd';
-    btn3.setAttribute('data-group',i); btn3.setAttribute('data-index',idx); btn3.setAttribute('aria-pressed','false');
-    btn3.addEventListener('click',()=>toggleThird(i,idx,btn3));
-    row.appendChild(nameSpan); row.appendChild(btn2); row.appendChild(btn3); list.appendChild(row);
-  });
-  return g;
+    const g=document.createElement('div');
+    g.className='group';
+    g.setAttribute('data-group',i);
+    g.innerHTML=`<h4>GROUP ${i+1}</h4><div class="team-list"></div>`;
+    const list=g.querySelector('.team-list');
+    teams.forEach((team,idx)=>{
+        const row=document.createElement('div');
+        row.className='team-row';
+        const nameSpan=document.createElement('span');
+        nameSpan.className='team-name';
+        nameSpan.textContent=team;
+        const btn2=document.createElement('button');
+        btn2.className='team-btn';
+        btn2.type='button';
+        btn2.textContent='2nd';
+        btn2.setAttribute('data-group',i);
+        btn2.setAttribute('data-index',idx);
+        btn2.setAttribute('aria-pressed','false');
+        btn2.addEventListener('click',()=>toggleSecond(i,idx,btn2));
+        const btn3=document.createElement('button');
+        btn3.className='team-btn';
+        btn3.type='button';
+        btn3.textContent='3rd';
+        btn3.setAttribute('data-group',i);
+        btn3.setAttribute('data-index',idx);
+        btn3.setAttribute('aria-pressed','false');
+        btn3.addEventListener('click',()=>toggleThird(i,idx,btn3));
+        row.appendChild(nameSpan);
+        row.appendChild(btn2);
+        row.appendChild(btn3);
+        list.appendChild(row);
+    });
+    return g;
 }
+
 function renderGroups(){ groupsGrid.innerHTML=''; GROUPS.forEach((g,i)=>groupsGrid.appendChild(createGroupEl(i,g))); }
 renderGroups();
+
+// Toggle functions
 function toggleSecond(group,team,btn){
-  if(state.thirdPicksIndex[group]===team){ flashInstruction('Already selected as 3rd-place'); return; }
-  if(state.secondPicks[group]===team){ state.secondPicks[group]=null; btn.classList.remove('selected-2'); btn.setAttribute('aria-pressed','false'); }
-  else { state.secondPicks[group]=team; document.querySelectorAll(`.team-btn[data-group="${group}"].selected-2`).forEach(b=>b.classList.remove('selected-2')); btn.classList.add('selected-2'); btn.setAttribute('aria-pressed','true'); }
-  checkForSubmit();
+    if(state.thirdPicksIndex[group]===team){ flashInstruction('Already selected as 3rd-place'); return; }
+    if(state.secondPicks[group]===team){ state.secondPicks[group]=null; btn.classList.remove('selected-2'); btn.setAttribute('aria-pressed','false'); }
+    else{ state.secondPicks[group]=team; document.querySelectorAll(`.team-btn[data-group="${group}"].selected-2`).forEach(b=>b.classList.remove('selected-2')); btn.classList.add('selected-2'); btn.setAttribute('aria-pressed','true'); }
+    checkForSubmit();
 }
+
 function toggleThird(group,team,btn){
-  if(state.secondPicks[group]===team){ flashInstruction('Already selected as 2nd-place'); return; }
-  const totalThird = state.thirdPicksIndex.filter(x=>x!==null).length;
-  if(state.thirdPicksIndex[group]===team){ state.thirdPicksIndex[group]=null; btn.classList.remove('selected-3'); btn.setAttribute('aria-pressed','false'); }
-  else { if(totalThird>=MAX_THIRD){ flashInstruction('Already selected 8 third-place teams'); return; }
-    if(state.thirdPicksIndex[group]!==null){ const prevBtn = document.querySelector(`.team-btn[data-group="${group}"][aria-pressed="true"].selected-3`); if(prevBtn) prevBtn.classList.remove('selected-3'); }
-    state.thirdPicksIndex[group]=team; btn.classList.add('selected-3'); btn.setAttribute('aria-pressed','true'); }
-  checkForSubmit();
+    if(state.secondPicks[group]===team){ flashInstruction('Already selected as 2nd-place'); return; }
+    const totalThird = state.thirdPicksIndex.filter(x=>x!==null).length;
+    if(state.thirdPicksIndex[group]===team){ state.thirdPicksIndex[group]=null; btn.classList.remove('selected-3'); btn.setAttribute('aria-pressed','false'); }
+    else{
+        if(totalThird>=MAX_THIRD){ flashInstruction('Already selected 8 third-place teams'); return; }
+        if(state.thirdPicksIndex[group]!==null){ 
+            const prevBtn = document.querySelector(`.team-btn[data-group="${group}"][aria-pressed="true"].selected-3`);
+            if(prevBtn) prevBtn.classList.remove('selected-3');
+        }
+        state.thirdPicksIndex[group]=team; btn.classList.add('selected-3'); btn.setAttribute('aria-pressed','true');
+    }
+    checkForSubmit();
 }
+
+// Submit button state
 function checkForSubmit(){
-  const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!==''; 
-  const secondComplete = state.secondPicks.filter(x=>x!==null).length===GROUPS.length;
-  const thirdComplete = state.thirdPicksIndex.filter(x=>x!==null).length===MAX_THIRD;
-  setSubmitState(allFilled && secondComplete && thirdComplete);
+    const allFilled = nameInput.value.trim() && emailInput.value.trim() && pinInput.value.trim().length===4 && comboSelect.value && goalsInput.value.trim()!=='';
+    const secondComplete = state.secondPicks.filter(x=>x!==null).length===GROUPS.length;
+    const thirdComplete = state.thirdPicksIndex.filter(x=>x!==null).length===MAX_THIRD;
+    setSubmitState(allFilled && secondComplete && thirdComplete);
 }
-function setSubmitState(enabled){ submitBtn.disabled=!enabled; if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit'); }
 
-// --- Supabase submission ---
+function setSubmitState(enabled){
+    submitBtn.disabled=!enabled;
+    if(enabled) submitBtn.classList.add('lit'); else submitBtn.classList.remove('lit');
+}
+
+// Submit handler using Supabase
 submitBtn.addEventListener('click', async ()=>{
-  if(submitBtn.disabled) return;
+    if(submitBtn.disabled) return;
+    const payload = {
+        username:nameInput.value.trim(),
+        email:emailInput.value.trim(),
+        pin:pinInput.value,
+        combo:comboSelect.value,
+        goals:goalsInput.value,
+        seconds:state.secondPicks.map((t,i)=>t!==null?GROUPS[i][t]:null),
+        thirds: state.thirdPicksIndex.map((t,i)=>t!==null?GROUPS[i][t]:null).filter(t=>t!==null)
+    };
 
-  const payload={
-    username:nameInput.value.trim(),
-    email:emailInput.value.trim(),
-    pin:pinInput.value,
-    combo:comboSelect.value,
-    goals:goalsInput.value,
-    seconds:state.secondPicks.map((t,i)=>t!==null?GROUPS[i][t]:null),
-    thirds: state.thirdPicksIndex.map((t,i)=>t!==null?GROUPS[i][t]:null).filter(t=>t!==null)
-  };
-
-  try {
-    const { data, error } = await supabase
-      .from('picks')
-      .insert([payload]);
-
-    if(error) throw error;
-    flashInstruction('SUBMITTED! THANKS');
-    clearBtn.click();
-  } catch(err){
-    flashInstruction('Submission failed: ' + (err.message || JSON.stringify(err)));
-    console.error('Supabase error:', err);
-  }
+    try{
+        const { data, error } = await supabase.from('predictions').insert([payload]);
+        if(error) throw error;
+        flashInstruction('SUBMITTED! THANKS');
+        clearBtn.click();
+    } catch(err){
+        flashInstruction('Submission failed: ' + (err.message || JSON.stringify(err)));
+        console.error('Supabase insert error:', err);
+    }
 });
 
+// Clear handler
 clearBtn.addEventListener('click',()=>{
-  state.secondPicks.fill(null); state.thirdPicksIndex.fill(null);
-  document.querySelectorAll('.team-btn').forEach(b=>b.classList.remove('selected-2','selected-3'));
-  nameInput.value=''; emailInput.value=''; pinInput.value=''; comboSelect.value=''; goalsInput.value='';
-  setSubmitState(false);
+    state.secondPicks.fill(null);
+    state.thirdPicksIndex.fill(null);
+    document.querySelectorAll('.team-btn').forEach(b=>b.classList.remove('selected-2','selected-3'));
+    nameInput.value=''; emailInput.value=''; pinInput.value=''; comboSelect.value=''; goalsInput.value='';
+    setSubmitState(false);
 });
 
 window.addEventListener('load',()=>{nameInput.focus();});
 </script>
+
 </body>
 </html>
