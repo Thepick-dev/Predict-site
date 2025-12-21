@@ -5,82 +5,81 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rules — GOAT</title>
 
-<!-- Press Start 2P -->
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
 body {
   margin: 0;
-  padding: 0;
-  background: #1b2a3a;
-  color: #ffffff;
+  background: #162533;
+  color: #fff;
   font-family: system-ui, sans-serif;
 }
 
 .container {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 60px 24px;
+  padding: 64px 24px;
   text-align: center;
 }
 
-/* Arcade title */
-.arcade-title {
+/* ===== ARCADE LOGO STACK ===== */
+
+.logo {
+  position: relative;
+  display: inline-block;
   font-family: "Press Start 2P", monospace;
   font-size: 96px;
-  line-height: 1.1;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
 
-  /* Fallback colour (always visible) */
-  color: #ff8c2a;
+/* Base bulk layer (dark navy) */
+.logo::before {
+  content: "GOAT";
+  position: absolute;
+  inset: 0;
+  transform: translate(8px, 8px);
+  color: #0b1f3a;
+  z-index: 1;
+}
 
-  /* Gradient fill */
+/* Inner black stroke layer */
+.logo::after {
+  content: "GOAT";
+  position: absolute;
+  inset: 0;
+  transform: translate(4px, 4px);
+  color: #000;
+  z-index: 2;
+}
+
+/* Top gradient face */
+.logo span {
+  position: relative;
+  z-index: 3;
+
   background: linear-gradient(
     to bottom,
     #3a7bd5 0%,
     #cfe8ff 35%,
-    #ffffff 42%,
+    #ffffff 45%,
     #ff8c2a 60%,
     #d43a2f 100%
   );
 
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
 
-  /* Pixel-weight illusion */
-  text-shadow:
-    /* black stroke */
-    -3px -3px 0 #000,
-     0px -3px 0 #000,
-     3px -3px 0 #000,
-    -3px  0px 0 #000,
-     3px  0px 0 #000,
-    -3px  3px 0 #000,
-     0px  3px 0 #000,
-     3px  3px 0 #000,
-
-    /* navy outer stroke */
-    -6px -6px 0 #0b1f3a,
-     0px -6px 0 #0b1f3a,
-     6px -6px 0 #0b1f3a,
-    -6px  0px 0 #0b1f3a,
-     6px  0px 0 #0b1f3a,
-    -6px  6px 0 #0b1f3a,
-     0px  6px 0 #0b1f3a,
-     6px  6px 0 #0b1f3a,
-
-    /* soft blue glow */
-     0 0 18px rgba(90,160,255,0.45),
-     0 0 32px rgba(90,160,255,0.25);
+  /* subtle glow */
+  filter:
+    drop-shadow(0 0 10px rgba(90,160,255,0.45))
+    drop-shadow(0 0 22px rgba(90,160,255,0.25));
 }
 
-/* Rules text */
+/* ===== RULES ===== */
+
 .rules {
-  margin-top: 48px;
   max-width: 720px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 56px auto 0;
   text-align: left;
   font-size: 16px;
   line-height: 1.6;
@@ -90,31 +89,27 @@ body {
   color: #cfe8ff;
   margin-bottom: 12px;
 }
-
-.rules ul {
-  padding-left: 20px;
-}
-
-.rules li {
-  margin-bottom: 8px;
-}
 </style>
 </head>
 
 <body>
   <div class="container">
-    <h1 class="arcade-title">GOAT</h1>
+
+    <div class="logo">
+      <span>GOAT</span>
+    </div>
 
     <div class="rules">
       <h2>Rules</h2>
       <ul>
         <li>Submit picks before kickoff.</li>
         <li>Correct outcomes score points.</li>
-        <li>Exact scorelines earn bonuses.</li>
-        <li>No changes after matches start.</li>
+        <li>Exact scores earn bonuses.</li>
+        <li>No edits after matches start.</li>
         <li>Leaderboard updates weekly.</li>
       </ul>
     </div>
+
   </div>
 </body>
 </html>
