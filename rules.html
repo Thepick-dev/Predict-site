@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-html, body {
+body {
   margin: 0;
   padding: 0;
   background: #1b2a3a;
@@ -17,20 +17,22 @@ html, body {
   font-family: system-ui, sans-serif;
 }
 
-/* Page layout */
-.wrapper {
-  max-width: 960px;
+.container {
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 48px 24px 64px;
+  padding: 60px 24px;
   text-align: center;
 }
 
 /* Arcade title */
 .arcade-title {
   font-family: "Press Start 2P", monospace;
-  font-size: clamp(48px, 10vw, 110px);
-  line-height: 1;
-  letter-spacing: 0.08em;
+  font-size: 96px;
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+
+  /* Fallback colour (always visible) */
+  color: #ff8c2a;
 
   /* Gradient fill */
   background: linear-gradient(
@@ -38,13 +40,81 @@ html, body {
     #3a7bd5 0%,
     #cfe8ff 35%,
     #ffffff 42%,
-    #ff8c2a 55%,
+    #ff8c2a 60%,
     #d43a2f 100%
   );
+
   -webkit-background-clip: text;
   background-clip: text;
-  color: transparent;
+  -webkit-text-fill-color: transparent;
 
-  /* Pixel-weight illusion via stacked shadows */
+  /* Pixel-weight illusion */
   text-shadow:
-    /* inner black stroke
+    /* black stroke */
+    -3px -3px 0 #000,
+     0px -3px 0 #000,
+     3px -3px 0 #000,
+    -3px  0px 0 #000,
+     3px  0px 0 #000,
+    -3px  3px 0 #000,
+     0px  3px 0 #000,
+     3px  3px 0 #000,
+
+    /* navy outer stroke */
+    -6px -6px 0 #0b1f3a,
+     0px -6px 0 #0b1f3a,
+     6px -6px 0 #0b1f3a,
+    -6px  0px 0 #0b1f3a,
+     6px  0px 0 #0b1f3a,
+    -6px  6px 0 #0b1f3a,
+     0px  6px 0 #0b1f3a,
+     6px  6px 0 #0b1f3a,
+
+    /* soft blue glow */
+     0 0 18px rgba(90,160,255,0.45),
+     0 0 32px rgba(90,160,255,0.25);
+}
+
+/* Rules text */
+.rules {
+  margin-top: 48px;
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.rules h2 {
+  color: #cfe8ff;
+  margin-bottom: 12px;
+}
+
+.rules ul {
+  padding-left: 20px;
+}
+
+.rules li {
+  margin-bottom: 8px;
+}
+</style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="arcade-title">GOAT</h1>
+
+    <div class="rules">
+      <h2>Rules</h2>
+      <ul>
+        <li>Submit picks before kickoff.</li>
+        <li>Correct outcomes score points.</li>
+        <li>Exact scorelines earn bonuses.</li>
+        <li>No changes after matches start.</li>
+        <li>Leaderboard updates weekly.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
