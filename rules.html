@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rules — GOAT</title>
+
+<!-- Press Start 2P -->
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #1b2a3a;
+  color: #ffffff;
+  font-family: system-ui, sans-serif;
+}
+
+/* Page layout */
+.wrapper {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+  text-align: center;
+}
+
+/* Arcade title */
+.arcade-title {
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(48px, 10vw, 110px);
+  line-height: 1;
+  letter-spacing: 0.08em;
+
+  /* Gradient fill */
+  background: linear-gradient(
+    to bottom,
+    #3a7bd5 0%,
+    #cfe8ff 35%,
+    #ffffff 42%,
+    #ff8c2a 55%,
+    #d43a2f 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  /* Pixel-weight illusion via stacked shadows */
+  text-shadow:
+    /* inner black stroke
