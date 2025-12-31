@@ -69,6 +69,11 @@ h2{font-size:11px;color:var(--yellow);margin-bottom:8px;}
   box-shadow:0 0 16px var(--ok);
   cursor:default;
 }
+.card.negative{
+  border-color:var(--warn);
+  color:var(--warn);
+  box-shadow:0 0 16px var(--warn);
+}
 .actions{margin-top:8px;}
 button{
   width:100%;
@@ -106,13 +111,14 @@ button{
   <div class="multiplier-wrap">
     <div class="multiplier-label">CURRENT MULTIPLIER</div>
     <div class="multiplier-box" id="multiplierBox">1.00</div>
-    <div class="multiplier-hint">GOING TOO FAR GETS EXPENSIVE</div>
+    <div class="multiplier-hint">4 DEAD CARDS IN PLAY</div>
   </div>
 
   <div class="instructions">
-    TURN OVER CARDS TO INCREASE YOUR MULTIPLIER.<br><br>
-    SOME CARDS ARE DEAD.<br>
-    EVERY FLIP DRAINS VALUE.<br><br>
+    TURN OVER CARDS TO CHANGE YOUR MULTIPLIER.<br><br>
+    SOME CARDS ADD VALUE.<br>
+    SOME CARDS REMOVE VALUE.<br>
+    <span style="color:var(--warn)">4 CARDS ARE DEAD.</span><br><br>
     GO OVER <span style="color:var(--yellow)">2.00</span> OR HIT A DEAD CARD<br>
     AND YOU RESET TO <span style="color:var(--yellow)">1.00</span>.
   </div>
@@ -127,16 +133,20 @@ button{
     <h1 id="summaryTitle"></h1>
     <p id="summaryText"></p>
     <div class="final-multiplier" id="finalMultiplier"></div>
+    <button id="resetBtn">RESET (DEV)</button>
   </div>
 
 </div>
 
 <script>
+'use strict';
+
 let multiplier = 1.00;
 let locked = false;
 
 const CARD_COUNT = 20;
-const BUST_COUNT = 4; // hidden instant-fail cards
+const BUST_COUNT = 4;
+const NEGATIVE_CHANCE = 0.35;
 
 const cardGrid = document.getElementById('cardGrid');
 const multiplierBox = document.getElementById('multiplierBox');
@@ -145,6 +155,7 @@ const summaryTitle = document.getElementById('summaryTitle');
 const summaryText = document.getElementById('summaryText');
 const finalMultiplier = document.getElementById('finalMultiplier');
 const stickBtn = document.getElementById('stickBtn');
+const resetBtn = document.getElementById('resetBtn');
 
 let bustIndexes = [];
 
@@ -153,6 +164,12 @@ init();
 function init(){
   bustIndexes = shuffle([...Array(CARD_COUNT).keys()]).slice(0,BUST_COUNT);
   buildCards();
+  multiplier = 1.00;
+  locked = false;
+  multiplierBox.textContent = multiplier.toFixed(2);
+  summary.style.display='none';
+  cardGrid.style.display='grid';
+  document.querySelector('.actions').style.display='block';
 }
 
 function buildCards(){
@@ -171,22 +188,24 @@ function revealCard(card,index){
 
   card.classList.add('revealed');
 
-  // escalating entropy
-  const decay = +(0.05 + (multiplier - 1) * 0.08).toFixed(2);
-  multiplier = +(multiplier - decay).toFixed(2);
-
   if(bustIndexes.includes(index)){
-    bust();
     card.textContent='☠';
+    bust();
     return;
   }
 
-  let gain = Math.random()*0.25 + 0.05;
-  gain = +gain.toFixed(2);
+  let value;
+  if(Math.random() < NEGATIVE_CHANCE){
+    value = -(Math.random()*0.15 + 0.05);
+    card.classList.add('negative');
+  }else{
+    value = Math.random()*0.25 + 0.05;
+  }
 
-  multiplier = +(multiplier + gain).toFixed(2);
-  card.textContent = '+' + gain.toFixed(2);
+  value = +value.toFixed(2);
+  multiplier = +(multiplier + value).toFixed(2);
 
+  card.textContent = (value > 0 ? '+' : '') + value.toFixed(2);
   update();
 
   if(multiplier > 2){
@@ -218,6 +237,10 @@ stickBtn.onclick=()=>{
     'YOUR PICKS ARE SUBMITTED<br>WITH THIS MULTIPLIER:',
     multiplier
   );
+};
+
+resetBtn.onclick = ()=>{
+  init();
 };
 
 function showSummary(title,text,value){
