@@ -111,16 +111,17 @@ button{
   <div class="multiplier-wrap">
     <div class="multiplier-label">CURRENT MULTIPLIER</div>
     <div class="multiplier-box" id="multiplierBox">1.00</div>
-    <div class="multiplier-hint">4 DEAD CARDS IN PLAY</div>
+    <div class="multiplier-hint">5 DEAD CARDS IN PLAY — MULTIPLIER NEVER BELOW 1</div>
   </div>
 
   <div class="instructions">
     TURN OVER CARDS TO CHANGE YOUR MULTIPLIER.<br><br>
     SOME CARDS ADD VALUE.<br>
-    SOME CARDS REMOVE VALUE.<br>
-    <span style="color:var(--warn)">4 CARDS ARE DEAD.</span><br><br>
+    SOME CARDS REMOVE VALUE (CAN BE BIG!).<br>
+    <span style="color:var(--warn)">5 CARDS ARE DEAD.</span><br><br>
     GO OVER <span style="color:var(--yellow)">2.00</span> OR HIT A DEAD CARD<br>
-    AND YOU RESET TO <span style="color:var(--yellow)">1.00</span>.
+    AND YOU RESET TO <span style="color:var(--yellow)">1.00</span>.<br>
+    MULTIPLIER WILL NEVER DROP BELOW 1.
   </div>
 
   <div class="card-grid" id="cardGrid"></div>
@@ -144,8 +145,8 @@ button{
 let multiplier = 1.00;
 let locked = false;
 
-const CARD_COUNT = 20;
-const BUST_COUNT = 4;
+const CARD_COUNT = 40;
+const BUST_COUNT = 5;
 const NEGATIVE_CHANCE = 0.35;
 
 const cardGrid = document.getElementById('cardGrid');
@@ -196,14 +197,16 @@ function revealCard(card,index){
 
   let value;
   if(Math.random() < NEGATIVE_CHANCE){
-    value = -(Math.random()*0.15 + 0.05);
+    value = -(Math.random()*0.3 + 0.05); // larger potential decrease
     card.classList.add('negative');
   }else{
-    value = Math.random()*0.25 + 0.05;
+    value = Math.random()*0.35 + 0.05; // larger potential increase
   }
 
   value = +value.toFixed(2);
   multiplier = +(multiplier + value).toFixed(2);
+
+  if(multiplier < 1) multiplier = 1; // ensure never below 1
 
   card.textContent = (value > 0 ? '+' : '') + value.toFixed(2);
   update();
@@ -223,7 +226,7 @@ function bust(){
   setTimeout(()=>{
     showSummary(
       'BUSTED',
-      'RISK OVERREACHED.<br>MULTIPLIER RESET.',
+      'RISK OVERREACHED OR DEAD CARD HIT.<br>MULTIPLIER RESET.',
       multiplier
     );
   },600);
