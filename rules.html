@@ -122,10 +122,10 @@ select option{
   color:var(--cyan);
 }
 .summary{display:none;}
-.summary h1{color:var(--yellow);font-size:16px;margin-bottom:12px;}
-.summary .duo-display{font-size:10px;color:var(--pink);margin:10px 0;line-height:1.5;}
+.summary h1{color:var(--yellow);font-size:16px;margin-bottom:10px;}
+.summary .duo-display{font-size:10px;color:var(--pink);margin:8px 0;}
 .final-multiplier{
-  margin:12px auto;width:120px;padding:10px;font-size:20px;
+  margin:10px auto;width:120px;padding:10px;font-size:20px;
   border:3px solid var(--yellow);
   color:var(--yellow);
   box-shadow:0 0 25px var(--yellow);
@@ -135,6 +135,7 @@ select option{
 <body>
 <div class="panel">
   <h1>DANGEROUS DUO</h1>
+
   <div class="duo">
     <h2>CHOOSE YOUR DUO</h2>
     <select id="duoSelect" class="select-duo">
@@ -155,26 +156,33 @@ select option{
       <option>DEPAY × DEST</option>
     </select>
   </div>
+
   <div class="multiplier-wrap">
     <div class="multiplier-label">CURRENT MULTIPLIER</div>
     <div class="multiplier-box" id="multiplierBox">1.00</div>
   </div>
+
   <div class="instructions">
-    DUO'S GOALS & ASSISTS × FINAL MULTIPLIER<br>
+    DUO'S POINTS × FINAL MULTIPLIER<br>
     TURN CARDS TO CHANGE MULTIPLIER<br>
-    SOME ADD, SOME SUBTRACT<br>
-    5 DEAD CARDS. OVER 2.00 OR DEAD = RESET TO 1<br>
-    GET CLOSE TO 2 WITHOUT GOING OVER!<br>
-    PRESS 'STICK & SUBMIT' TO LOCK IN
+    SOME ADD, SOME SUBTRACT (YOU CAN NEVER GO BELOW 1)<br>
+    5 DEAD CARDS WORTH 1.01<br>
+    GO OVER 2.00 OR DRAW A DEAD CARD = MULTIPLIER OF 1 LOCKED IN<br>
+    GET AS CLOSE TO 2 AS POSSIBLE WITHOUT GOING OVER!<br>
+    PRESS 'STICK & SUBMIT PICKS' TO LOCK IN
   </div>
+
   <div class="actions">
     <button id="stickBtn">STICK & SUBMIT PICKS</button>
   </div>
+
   <div class="card-grid" id="cardGrid"></div>
+
   <div class="cumulative-stats" id="cumulativeStats">
     UNREVEALED: +<span id="positiveSum">0.00</span> / -<span id="negativeSum">0.00</span><br>
     (DEAD CARDS = +1.01)
   </div>
+
   <div class="summary" id="summary">
     <h1 id="summaryTitle"></h1>
     <div class="duo-display" id="duoDisplay"></div>
@@ -243,7 +251,7 @@ function buildCards(){
   }
 }
 
-function revealCard(card,index,numberDiv,frontDiv){
+function revealCard(card,index,numberDiv){
   if(locked||card.classList.contains('revealed'))return;
   card.classList.add('revealed');
   revealedCards.add(index);
@@ -275,9 +283,18 @@ function updateCumulativeStats(){
 }
 
 function update(){multiplierBox.textContent=multiplier.toFixed(2);}
-function bust(){locked=true;multiplier=1.00;setTimeout(()=>{showSummary('BUSTED!',multiplier)},600);}
-stickBtn.onclick=()=>{if(locked)return;locked=true;showSummary('PICKS LOCKED!',multiplier);}
-resetBtn.onclick=()=>{init();}
+function bust(){
+  locked=true;
+  multiplier=1.00;
+  setTimeout(()=>{showSummary('BUSTED — YOU WENT OVER 2!',multiplier)},600);
+}
+stickBtn.onclick=()=>{
+  if(locked)return;
+  locked=true;
+  showSummary('MULTIPLIER LOCKED!',multiplier);
+};
+resetBtn.onclick=()=>{init();};
+
 function showSummary(title,value){
   summaryTitle.innerHTML=title;
   duoDisplay.innerHTML=duoSelect.value;
@@ -287,7 +304,14 @@ function showSummary(title,value){
   document.querySelector('.cumulative-stats').style.display='none';
   summary.style.display='block';
 }
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
 </script>
 </body>
 </html>
