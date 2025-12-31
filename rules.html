@@ -3,178 +3,309 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rules — Arcade & Jersey 10 Font Specimen</title>
-
-<!-- Press Start 2P from Google Fonts -->
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap">
+<title>GOALSTORM! — BONUS MULTIPLIER</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 
 <style>
-/* ===== Self-hosted Jersey 10 font ===== */
-@font-face {
-  font-family: 'Jersey 10';
-  src: url(data:font/woff2;base64,BASE64_FONT_DATA_HERE) format('woff2');
-  font-weight: normal;
-  font-style: normal;
-}
-
 :root{
-  --bg:#000;
-  --panel:#0b0b0b;
-  --border:#222;
-  --text:#f7f7f2;
+  --bg:#050510; --panel:#0b0b1f; --neon:#00f6ff; --ok:#22ff88; --warn:#ffcc00; --dim:#666;
+  --cyan:#00F6FF; --yellow:#FFD60A; --pink:#FF2FC7; --white:#F7F7F2; --purple:#B026FF;
 }
-
 *{box-sizing:border-box;margin:0;padding:0;}
-
 body{
-  background:var(--bg);
-  color:var(--text);
-  padding:48px 16px;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#0c0c2a,#000);
+  color:#e8faff;
+  font-family:"Press Start 2P",monospace;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   text-align:center;
 }
 
-/* Core arcade letter treatment */
-.arcade span{
-  display:inline-block;
-  background:linear-gradient(
-    to bottom,
-    #00b0ff 0%,
-    #00d0ff 20%,
-    #ffffff 40%,
-    #ffe066 60%,
-    #ffcc33 80%,
-    #ffaa00 100%
-  );
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
-  filter:
-    drop-shadow(2px 2px 0 #000)
-    drop-shadow(3px 3px 0 #000);
-  margin:0 -1px;
-  position:relative;
-}
-
-/* CRT scanlines */
-.arcade::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  background:repeating-linear-gradient(
-    to bottom,
-    rgba(0,0,0,0.15) 0px,
-    rgba(0,0,0,0.15) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-}
-
-/* Layout blocks */
-.section{
-  max-width:960px;
-  margin:56px auto;
-  padding:36px 24px;
-  border:4px solid var(--border);
+/* PANEL */
+.panel{
+  width:92%;
+  max-width:520px;
   background:var(--panel);
+  border:3px solid var(--pink);
+  box-shadow:0 0 35px rgba(255,47,199,.45);
+  padding:24px;
 }
 
-.section-title{
-  margin-bottom:32px;
+/* HEADERS */
+h1{
+  font-size:18px;
+  color:var(--pink);
+  margin-bottom:14px;
+}
+h2{
+  font-size:12px;
+  color:var(--yellow);
+  margin-bottom:10px;
 }
 
-/* Fonts */
-.ps2p{ font-family:'Press Start 2P', cursive; }
-.jersey{ font-family:'Jersey 10', sans-serif; }
-
-/* Pixel outline for Jersey 10 only */
-.jersey span{
-  text-shadow:
-    -1px 0 #111,
-     1px 0 #111,
-     0 -1px #111,
-     0 1px #111;
+/* DUO */
+.duo{
+  margin-bottom:18px;
+}
+.duo-name{
+  margin-top:8px;
+  font-size:14px;
+  color:var(--cyan);
+  text-shadow:0 0 15px var(--cyan);
 }
 
-/* Sizes */
-.s12 span{ font-size:12px; }
-.s16 span{ font-size:16px; }
-.s24 span{ font-size:24px; }
-.s36 span{ font-size:36px; }
-.s48 span{ font-size:48px; }
-.s72 span{ font-size:72px; }
-
-.label{
-  margin:18px 0 8px;
-  font-size:11px;
-  letter-spacing:1px;
-  opacity:0.6;
+/* MULTIPLIER */
+.multiplier-wrap{
+  margin:18px 0;
 }
-
-footer{
-  margin-top:72px;
+.multiplier-label{
   font-size:10px;
-  opacity:0.5;
+  color:var(--white);
+}
+.multiplier-box{
+  margin:10px auto;
+  width:140px;
+  padding:16px;
+  font-size:20px;
+  border:3px solid var(--pink);
+  color:var(--pink);
+  box-shadow:0 0 25px var(--pink);
+}
+.multiplier-hint{
+  font-size:9px;
+  color:var(--dim);
+}
+
+/* INSTRUCTIONS */
+.instructions{
+  font-size:9px;
+  line-height:1.6;
+  margin:18px 0;
+  color:var(--white);
+}
+
+/* CARDS */
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:18px;
+}
+.card{
+  height:90px;
+  border:2px solid var(--cyan);
+  background:#000;
+  color:var(--cyan);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  cursor:pointer;
+  box-shadow:0 0 15px rgba(0,246,255,.35);
+}
+.card.face-down{
+  color:var(--dim);
+}
+.card.revealed{
+  border-color:var(--ok);
+  color:var(--ok);
+  box-shadow:0 0 18px var(--ok);
+  cursor:default;
+}
+
+/* ACTIONS */
+.actions{
+  margin-top:10px;
+}
+button{
+  width:100%;
+  padding:10px;
+  font-family:inherit;
+  font-size:10px;
+  background:#000;
+  color:var(--neon);
+  border:2px solid var(--neon);
+  cursor:pointer;
+}
+
+/* SUMMARY */
+.summary{
+  display:none;
+}
+.summary h1{
+  color:var(--yellow);
+}
+.summary p{
+  font-size:10px;
+  line-height:1.6;
+  margin:14px 0;
+}
+.final-multiplier{
+  margin:12px auto;
+  width:160px;
+  padding:18px;
+  font-size:22px;
+  border:3px solid var(--yellow);
+  color:var(--yellow);
+  box-shadow:0 0 30px var(--yellow);
 }
 </style>
 </head>
 
 <body>
 
-<!-- PRESS START 2P -->
-<div class="section">
-  <div class="section-title arcade ps2p s36">
-    <span>P</span><span>R</span><span>E</span><span>S</span><span>S</span>
-    <span> </span>
-    <span>S</span><span>T</span><span>A</span><span>R</span><span>T</span>
-    <span> </span>
-    <span>2</span><span>P</span>
+<div class="panel">
+
+  <!-- TITLE -->
+  <h1>BONUS MULTIPLIER</h1>
+
+  <!-- GOALSCORER DUO (PLACEHOLDER) -->
+  <div class="duo">
+    <h2>YOUR GOALSCORING DUO</h2>
+    <div class="duo-name" id="duoName">MBAPPÉ × HAALAND</div>
   </div>
 
-  <div class="label">12px</div>
-  <div class="arcade ps2p s12">
-    <span>I</span><span>N</span><span>S</span><span>E</span><span>R</span><span>T</span>
-    <span> </span>
-    <span>C</span><span>O</span><span>I</span><span>N</span>
+  <!-- MULTIPLIER -->
+  <div class="multiplier-wrap">
+    <div class="multiplier-label">CURRENT MULTIPLIER</div>
+    <div class="multiplier-box" id="multiplierBox">1.00</div>
+    <div class="multiplier-hint">DO NOT GO OVER 2.00</div>
   </div>
 
-  <div class="label">24px</div>
-  <div class="arcade ps2p s24">
-    <span>S</span><span>U</span><span>P</span><span>E</span><span>R</span>
-    <span> </span>
-    <span>A</span><span>W</span><span>E</span><span>S</span><span>O</span><span>M</span><span>E</span>
+  <!-- INSTRUCTIONS -->
+  <div class="instructions">
+    TURN OVER CARDS TO INCREASE YOUR MULTIPLIER.<br><br>
+    EACH CARD ADDS A RANDOM VALUE BETWEEN
+    <span style="color:var(--cyan)">0.00</span> AND
+    <span style="color:var(--cyan)">1.00</span>.<br><br>
+    IF YOU GO OVER <span style="color:var(--yellow)">2.00</span>,
+    YOUR MULTIPLIER RESETS TO <span style="color:var(--yellow)">1.00</span>
+    AND YOUR PICKS SUBMIT AUTOMATICALLY.
   </div>
+
+  <!-- CARDS -->
+  <div class="card-grid" id="cardGrid"></div>
+
+  <!-- ACTION -->
+  <div class="actions">
+    <button id="stickBtn">STICK & SUBMIT PICKS</button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary" id="summary">
+    <h1 id="summaryTitle"></h1>
+    <p id="summaryText"></p>
+    <div class="final-multiplier" id="finalMultiplier"></div>
+    <button onclick="resetGame()">RESET (DEV)</button>
+  </div>
+
 </div>
 
-<!-- JERSEY 10 -->
-<div class="section">
-  <div class="section-title arcade jersey s48">
-    <span>J</span><span>E</span><span>R</span><span>S</span><span>E</span><span>Y</span>
-    <span> </span>
-    <span>1</span><span>0</span>
-  </div>
+<script>
+'use strict';
 
-  <div class="label">24px</div>
-  <div class="arcade jersey s24">
-    <span>S</span><span>U</span><span>P</span><span>E</span><span>R</span>
-    <span> </span>
-    <span>A</span><span>W</span><span>E</span><span>S</span><span>O</span><span>M</span><span>E</span>
-  </div>
+/* CONFIG */
+const CARD_COUNT = 8;
 
-  <div class="label">36px</div>
-  <div class="arcade jersey s36">
-    <span>F</span><span>O</span><span>O</span><span>T</span><span>B</span><span>A</span><span>L</span><span>L</span>
-  </div>
+/* STATE */
+let multiplier = 1.00;
+let locked = false;
 
-  <div class="label">72px</div>
-  <div class="arcade jersey s72">
-    <span>S</span><span>O</span><span>C</span><span>I</span><span>E</span><span>T</span><span>Y</span>
-  </div>
-</div>
+/* ELEMENTS */
+const cardGrid = document.getElementById('cardGrid');
+const multiplierBox = document.getElementById('multiplierBox');
+const summary = document.getElementById('summary');
+const summaryTitle = document.getElementById('summaryTitle');
+const summaryText = document.getElementById('summaryText');
+const finalMultiplier = document.getElementById('finalMultiplier');
 
-<footer>
-  Arcade & display font specimen
-</footer>
+/* INIT */
+buildCards();
+
+/* BUILD CARDS */
+function buildCards(){
+  cardGrid.innerHTML='';
+  for(let i=0;i<CARD_COUNT;i++){
+    const card=document.createElement('div');
+    card.className='card face-down';
+    card.textContent='CARD';
+    card.onclick=()=>revealCard(card);
+    cardGrid.appendChild(card);
+  }
+}
+
+/* REVEAL CARD */
+function revealCard(card){
+  if(locked || card.classList.contains('revealed')) return;
+
+  const value = +(Math.random().toFixed(2));
+  multiplier = +(multiplier + value).toFixed(2);
+
+  card.classList.remove('face-down');
+  card.classList.add('revealed');
+  card.textContent='+' + value.toFixed(2);
+
+  updateMultiplier();
+
+  if(multiplier > 2){
+    bust();
+  }
+}
+
+/* UPDATE DISPLAY */
+function updateMultiplier(){
+  multiplierBox.textContent = multiplier.toFixed(2);
+}
+
+/* BUST */
+function bust(){
+  locked = true;
+  multiplier = 1.00;
+
+  setTimeout(()=>{
+    showSummary(
+      'BUSTED',
+      'YOU WENT OVER 2.00.<br>MULTIPLIER RESET.',
+      multiplier
+    );
+  },700);
+}
+
+/* STICK */
+stickBtn.onclick=()=>{
+  if(locked) return;
+  locked=true;
+  showSummary(
+    'LOCKED IN',
+    'YOUR PICKS ARE SUBMITTED<br>WITH THIS MULTIPLIER:',
+    multiplier
+  );
+};
+
+/* SUMMARY */
+function showSummary(title,text,value){
+  summaryTitle.innerHTML=title;
+  summaryText.innerHTML=text;
+  finalMultiplier.textContent=value.toFixed(2);
+
+  cardGrid.style.display='none';
+  document.querySelector('.actions').style.display='none';
+  summary.style.display='block';
+}
+
+/* RESET (DEV ONLY) */
+function resetGame(){
+  multiplier=1.00;
+  locked=false;
+  multiplierBox.textContent='1.00';
+  summary.style.display='none';
+  cardGrid.style.display='grid';
+  document.querySelector('.actions').style.display='block';
+  buildCards();
+}
+</script>
 
 </body>
 </html>
