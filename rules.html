@@ -28,58 +28,58 @@ body{
   background:var(--panel);
   border:3px solid var(--pink);
   box-shadow:0 0 35px rgba(255,47,199,.45);
-  padding:20px;
+  padding:16px;
 }
-h1{font-size:16px;color:var(--pink);margin-bottom:12px;}
-h2{font-size:11px;color:var(--yellow);margin-bottom:8px;}
-.duo{margin-bottom:14px;}
-.duo-name{margin-top:6px;font-size:13px;color:var(--cyan);text-shadow:0 0 15px var(--cyan);}
-.multiplier-wrap{margin:14px 0;}
-.multiplier-label{font-size:9px;color:var(--white);}
+h1{font-size:14px;color:var(--pink);margin-bottom:10px;}
+h2{font-size:10px;color:var(--yellow);margin-bottom:6px;}
+.duo{margin-bottom:12px;}
+.duo-name{margin-top:4px;font-size:12px;color:var(--cyan);text-shadow:0 0 12px var(--cyan);}
+.multiplier-wrap{margin:10px 0;}
+.multiplier-label{font-size:8px;color:var(--white);}
 .multiplier-box{
-  margin:8px auto;width:120px;padding:12px;font-size:18px;
+  margin:6px auto;width:100px;padding:10px;font-size:16px;
   border:3px solid var(--pink);color:var(--pink);
-  box-shadow:0 0 25px var(--pink);
+  box-shadow:0 0 20px var(--pink);
 }
-.multiplier-hint{font-size:8px;color:var(--dim);}
 .instructions{
-  font-size:8px;line-height:1.5;margin:12px 0;color:var(--white);
+  font-size:7px;line-height:1.4;margin:10px 0;color:var(--white);
 }
 .card-grid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
-  gap:8px;
-  margin-bottom:14px;
+  gap:6px;
+  margin-bottom:12px;
 }
 .card{
-  height:60px;
+  height:50px;
   border:2px solid var(--cyan);
-  background:#000;
+  background:url('card.jpg') center/cover no-repeat;
   color:var(--cyan);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:12px;
+  font-size:11px;
   cursor:pointer;
-  box-shadow:0 0 12px rgba(0,246,255,.35);
+  box-shadow:0 0 10px rgba(0,246,255,.35);
 }
 .card.revealed{
   border-color:var(--ok);
   color:var(--ok);
-  box-shadow:0 0 16px var(--ok);
+  box-shadow:0 0 14px var(--ok);
+  background:#000;
   cursor:default;
 }
 .card.negative{
   border-color:var(--warn);
   color:var(--warn);
-  box-shadow:0 0 16px var(--warn);
+  box-shadow:0 0 14px var(--warn);
 }
-.actions{margin-top:8px;}
+.actions{margin-top:6px;}
 button{
   width:100%;
-  padding:8px;
+  padding:6px;
   font-family:inherit;
-  font-size:9px;
+  font-size:8px;
   background:#000;
   color:var(--neon);
   border:2px solid var(--neon);
@@ -87,12 +87,12 @@ button{
 }
 .summary{display:none;}
 .summary h1{color:var(--yellow);}
-.summary p{font-size:9px;line-height:1.5;margin:12px 0;}
+.summary p{font-size:8px;line-height:1.4;margin:10px 0;}
 .final-multiplier{
-  margin:10px auto;width:150px;padding:14px;font-size:20px;
+  margin:8px auto;width:140px;padding:12px;font-size:18px;
   border:3px solid var(--yellow);
   color:var(--yellow);
-  box-shadow:0 0 30px var(--yellow);
+  box-shadow:0 0 25px var(--yellow);
 }
 </style>
 </head>
@@ -111,14 +111,13 @@ button{
   <div class="multiplier-wrap">
     <div class="multiplier-label">CURRENT MULTIPLIER</div>
     <div class="multiplier-box" id="multiplierBox">1.00</div>
-    <div class="multiplier-hint">5 DEAD CARDS IN PLAY — MULTIPLIER NEVER BELOW 1</div>
   </div>
 
   <div class="instructions">
-    TURN OVER CARDS TO CHANGE YOUR MULTIPLIER.<br><br>
+    TURN OVER CARDS TO CHANGE YOUR MULTIPLIER.<br>
     SOME CARDS ADD VALUE.<br>
     SOME CARDS REMOVE VALUE (CAN BE BIG!).<br>
-    <span style="color:var(--warn)">5 CARDS ARE DEAD.</span><br><br>
+    <span style="color:var(--warn)">5 CARDS ARE DEAD.</span><br>
     GO OVER <span style="color:var(--yellow)">2.00</span> OR HIT A DEAD CARD<br>
     AND YOU RESET TO <span style="color:var(--yellow)">1.00</span>.<br>
     MULTIPLIER WILL NEVER DROP BELOW 1.
@@ -188,6 +187,7 @@ function revealCard(card,index){
   if(locked || card.classList.contains('revealed')) return;
 
   card.classList.add('revealed');
+  card.style.background = '#000'; // hide card.jpg once revealed
 
   if(bustIndexes.includes(index)){
     card.textContent='☠';
@@ -197,16 +197,16 @@ function revealCard(card,index){
 
   let value;
   if(Math.random() < NEGATIVE_CHANCE){
-    value = -(Math.random()*0.3 + 0.05); // larger potential decrease
+    value = -(Math.random()*0.3 + 0.05);
     card.classList.add('negative');
   }else{
-    value = Math.random()*0.35 + 0.05; // larger potential increase
+    value = Math.random()*0.35 + 0.05;
   }
 
   value = +value.toFixed(2);
   multiplier = +(multiplier + value).toFixed(2);
 
-  if(multiplier < 1) multiplier = 1; // ensure never below 1
+  if(multiplier < 1) multiplier = 1;
 
   card.textContent = (value > 0 ? '+' : '') + value.toFixed(2);
   update();
