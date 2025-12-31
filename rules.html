@@ -121,11 +121,41 @@ select option{
   background:#000;
   color:var(--cyan);
 }
-.summary{display:none;}
-.summary h1{color:var(--yellow);font-size:16px;margin-bottom:10px;}
-.summary .duo-display{font-size:10px;color:var(--pink);margin:8px 0;}
+
+/* SUMMARY POPUP */
+.summary{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.summary-inner{
+  background:var(--panel);
+  border:3px solid var(--yellow);
+  box-shadow:0 0 35px var(--yellow);
+  padding:16px;
+  width:90%;
+  max-width:360px;
+}
+.summary h1{
+  color:var(--warn);
+  font-size:12px;
+  margin-bottom:10px;
+}
+.summary .duo-display{
+  font-size:10px;
+  color:var(--pink);
+  margin-bottom:12px;
+}
 .final-multiplier{
-  margin:10px auto;width:120px;padding:10px;font-size:20px;
+  margin:12px auto;
+  width:120px;
+  padding:10px;
+  font-size:20px;
   border:3px solid var(--yellow);
   color:var(--yellow);
   box-shadow:0 0 25px var(--yellow);
@@ -182,8 +212,10 @@ select option{
     UNREVEALED: +<span id="positiveSum">0.00</span> / -<span id="negativeSum">0.00</span><br>
     (DEAD CARDS = +1.01)
   </div>
+</div>
 
-  <div class="summary" id="summary">
+<div class="summary" id="summary">
+  <div class="summary-inner">
     <h1 id="summaryTitle"></h1>
     <div class="duo-display" id="duoDisplay"></div>
     <div class="final-multiplier" id="finalMultiplier"></div>
@@ -230,9 +262,6 @@ function init(){
   multiplierBox.textContent=multiplier.toFixed(2);
   updateCumulativeStats();
   summary.style.display='none';
-  cardGrid.style.display='grid';
-  document.querySelector('.actions').style.display='block';
-  document.querySelector('.cumulative-stats').style.display='block';
 }
 
 function buildCards(){
@@ -299,13 +328,10 @@ stickBtn.onclick=()=>{
 resetBtn.onclick=()=>{init();};
 
 function showSummary(title,value){
-  summaryTitle.innerHTML=title;
-  duoDisplay.innerHTML=duoSelect.value;
+  summaryTitle.textContent=title;
+  duoDisplay.textContent=duoSelect.value;
   finalMultiplier.textContent=value.toFixed(2);
-  cardGrid.style.display='none';
-  document.querySelector('.actions').style.display='none';
-  document.querySelector('.cumulative-stats').style.display='none';
-  summary.style.display='block';
+  summary.style.display='flex';
 }
 
 function shuffle(a){
