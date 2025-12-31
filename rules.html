@@ -30,80 +30,80 @@ body{
   background:var(--panel);
   border:3px solid var(--pink);
   box-shadow:0 0 35px rgba(255,47,199,.45);
-  padding:24px;
+  padding:20px;
 }
 
 /* HEADERS */
 h1{
-  font-size:18px;
+  font-size:16px;
   color:var(--pink);
-  margin-bottom:14px;
+  margin-bottom:12px;
 }
 h2{
-  font-size:12px;
+  font-size:11px;
   color:var(--yellow);
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 
 /* DUO */
 .duo{
-  margin-bottom:18px;
+  margin-bottom:14px;
 }
 .duo-name{
-  margin-top:8px;
-  font-size:14px;
+  margin-top:6px;
+  font-size:13px;
   color:var(--cyan);
   text-shadow:0 0 15px var(--cyan);
 }
 
 /* MULTIPLIER */
 .multiplier-wrap{
-  margin:18px 0;
+  margin:14px 0;
 }
 .multiplier-label{
-  font-size:10px;
+  font-size:9px;
   color:var(--white);
 }
 .multiplier-box{
-  margin:10px auto;
-  width:140px;
-  padding:16px;
-  font-size:20px;
+  margin:8px auto;
+  width:120px;
+  padding:12px;
+  font-size:18px;
   border:3px solid var(--pink);
   color:var(--pink);
   box-shadow:0 0 25px var(--pink);
 }
 .multiplier-hint{
-  font-size:9px;
+  font-size:8px;
   color:var(--dim);
 }
 
 /* INSTRUCTIONS */
 .instructions{
-  font-size:9px;
-  line-height:1.6;
-  margin:18px 0;
+  font-size:8px;
+  line-height:1.5;
+  margin:12px 0;
   color:var(--white);
 }
 
 /* CARDS */
 .card-grid{
   display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:12px;
-  margin-bottom:18px;
+  grid-template-columns:repeat(5,1fr);
+  gap:8px;
+  margin-bottom:14px;
 }
 .card{
-  height:90px;
+  height:60px;
   border:2px solid var(--cyan);
   background:#000;
   color:var(--cyan);
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:14px;
+  font-size:12px;
   cursor:pointer;
-  box-shadow:0 0 15px rgba(0,246,255,.35);
+  box-shadow:0 0 12px rgba(0,246,255,.35);
 }
 .card.face-down{
   color:var(--dim);
@@ -111,19 +111,19 @@ h2{
 .card.revealed{
   border-color:var(--ok);
   color:var(--ok);
-  box-shadow:0 0 18px var(--ok);
+  box-shadow:0 0 16px var(--ok);
   cursor:default;
 }
 
 /* ACTIONS */
 .actions{
-  margin-top:10px;
+  margin-top:8px;
 }
 button{
   width:100%;
-  padding:10px;
+  padding:8px;
   font-family:inherit;
-  font-size:10px;
+  font-size:9px;
   background:#000;
   color:var(--neon);
   border:2px solid var(--neon);
@@ -138,15 +138,15 @@ button{
   color:var(--yellow);
 }
 .summary p{
-  font-size:10px;
-  line-height:1.6;
-  margin:14px 0;
+  font-size:9px;
+  line-height:1.5;
+  margin:12px 0;
 }
 .final-multiplier{
-  margin:12px auto;
-  width:160px;
-  padding:18px;
-  font-size:22px;
+  margin:10px auto;
+  width:150px;
+  padding:14px;
+  font-size:20px;
   border:3px solid var(--yellow);
   color:var(--yellow);
   box-shadow:0 0 30px var(--yellow);
@@ -158,42 +158,32 @@ button{
 
 <div class="panel">
 
-  <!-- TITLE -->
   <h1>BONUS MULTIPLIER</h1>
 
-  <!-- GOALSCORER DUO (PLACEHOLDER) -->
   <div class="duo">
     <h2>YOUR GOALSCORING DUO</h2>
     <div class="duo-name" id="duoName">MBAPPÉ × HAALAND</div>
   </div>
 
-  <!-- MULTIPLIER -->
   <div class="multiplier-wrap">
     <div class="multiplier-label">CURRENT MULTIPLIER</div>
     <div class="multiplier-box" id="multiplierBox">1.00</div>
     <div class="multiplier-hint">DO NOT GO OVER 2.00</div>
   </div>
 
-  <!-- INSTRUCTIONS -->
   <div class="instructions">
     TURN OVER CARDS TO INCREASE YOUR MULTIPLIER.<br><br>
-    EACH CARD ADDS A RANDOM VALUE BETWEEN
-    <span style="color:var(--cyan)">0.00</span> AND
-    <span style="color:var(--cyan)">1.00</span>.<br><br>
-    IF YOU GO OVER <span style="color:var(--yellow)">2.00</span>,
-    YOUR MULTIPLIER RESETS TO <span style="color:var(--yellow)">1.00</span>
-    AND YOUR PICKS SUBMIT AUTOMATICALLY.
+    EACH CARD ADDS A RANDOM VALUE.<br>
+    PUSH YOUR LUCK — BUT DO NOT GO OVER <span style="color:var(--yellow)">2.00</span>.<br><br>
+    GO OVER AND YOUR MULTIPLIER RESETS TO <span style="color:var(--yellow)">1.00</span>.
   </div>
 
-  <!-- CARDS -->
   <div class="card-grid" id="cardGrid"></div>
 
-  <!-- ACTION -->
   <div class="actions">
     <button id="stickBtn">STICK & SUBMIT PICKS</button>
   </div>
 
-  <!-- SUMMARY -->
   <div class="summary" id="summary">
     <h1 id="summaryTitle"></h1>
     <p id="summaryText"></p>
@@ -207,7 +197,7 @@ button{
 'use strict';
 
 /* CONFIG */
-const CARD_COUNT = 8;
+const CARD_COUNT = 20;
 
 /* STATE */
 let multiplier = 1.00;
@@ -240,7 +230,13 @@ function buildCards(){
 function revealCard(card){
   if(locked || card.classList.contains('revealed')) return;
 
-  const value = +(Math.random().toFixed(2));
+  /* Biased random: typically 0.08–0.35, occasional higher spike */
+  let value = Math.random() * 0.3 + 0.05;
+  if(Math.random() > 0.85){
+    value += Math.random() * 0.25;
+  }
+  value = +value.toFixed(2);
+
   multiplier = +(multiplier + value).toFixed(2);
 
   card.classList.remove('face-down');
@@ -267,7 +263,7 @@ function bust(){
   setTimeout(()=>{
     showSummary(
       'BUSTED',
-      'YOU WENT OVER 2.00.<br>MULTIPLIER RESET.',
+      'YOU PUSHED TOO FAR.<br>MULTIPLIER RESET.',
       multiplier
     );
   },700);
