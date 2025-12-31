@@ -246,7 +246,7 @@ function buildCards(){
     numberDiv.className='card-number';
     card.appendChild(frontDiv);
     card.appendChild(numberDiv);
-    card.onclick=()=>revealCard(card,i,numberDiv,frontDiv);
+    card.onclick=()=>revealCard(card,i,numberDiv);
     cardGrid.appendChild(card);
   }
 }
@@ -283,16 +283,19 @@ function updateCumulativeStats(){
 }
 
 function update(){multiplierBox.textContent=multiplier.toFixed(2);}
+
 function bust(){
   locked=true;
   multiplier=1.00;
   setTimeout(()=>{showSummary('BUSTED — YOU WENT OVER 2!',multiplier)},600);
 }
+
 stickBtn.onclick=()=>{
   if(locked)return;
   locked=true;
-  showSummary('MULTIPLIER LOCKED!',multiplier);
+  showSummary('',multiplier);
 };
+
 resetBtn.onclick=()=>{init();};
 
 function showSummary(title,value){
