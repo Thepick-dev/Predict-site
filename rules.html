@@ -22,8 +22,6 @@ body{
   justify-content:center;
   text-align:center;
 }
-
-/* PANEL */
 .panel{
   width:92%;
   max-width:520px;
@@ -32,61 +30,21 @@ body{
   box-shadow:0 0 35px rgba(255,47,199,.45);
   padding:20px;
 }
-
-/* HEADERS */
-h1{
-  font-size:16px;
-  color:var(--pink);
-  margin-bottom:12px;
-}
-h2{
-  font-size:11px;
-  color:var(--yellow);
-  margin-bottom:8px;
-}
-
-/* DUO */
-.duo{
-  margin-bottom:14px;
-}
-.duo-name{
-  margin-top:6px;
-  font-size:13px;
-  color:var(--cyan);
-  text-shadow:0 0 15px var(--cyan);
-}
-
-/* MULTIPLIER */
-.multiplier-wrap{
-  margin:14px 0;
-}
-.multiplier-label{
-  font-size:9px;
-  color:var(--white);
-}
+h1{font-size:16px;color:var(--pink);margin-bottom:12px;}
+h2{font-size:11px;color:var(--yellow);margin-bottom:8px;}
+.duo{margin-bottom:14px;}
+.duo-name{margin-top:6px;font-size:13px;color:var(--cyan);text-shadow:0 0 15px var(--cyan);}
+.multiplier-wrap{margin:14px 0;}
+.multiplier-label{font-size:9px;color:var(--white);}
 .multiplier-box{
-  margin:8px auto;
-  width:120px;
-  padding:12px;
-  font-size:18px;
-  border:3px solid var(--pink);
-  color:var(--pink);
+  margin:8px auto;width:120px;padding:12px;font-size:18px;
+  border:3px solid var(--pink);color:var(--pink);
   box-shadow:0 0 25px var(--pink);
 }
-.multiplier-hint{
-  font-size:8px;
-  color:var(--dim);
-}
-
-/* INSTRUCTIONS */
+.multiplier-hint{font-size:8px;color:var(--dim);}
 .instructions{
-  font-size:8px;
-  line-height:1.5;
-  margin:12px 0;
-  color:var(--white);
+  font-size:8px;line-height:1.5;margin:12px 0;color:var(--white);
 }
-
-/* CARDS */
 .card-grid{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -105,20 +63,13 @@ h2{
   cursor:pointer;
   box-shadow:0 0 12px rgba(0,246,255,.35);
 }
-.card.face-down{
-  color:var(--dim);
-}
 .card.revealed{
   border-color:var(--ok);
   color:var(--ok);
   box-shadow:0 0 16px var(--ok);
   cursor:default;
 }
-
-/* ACTIONS */
-.actions{
-  margin-top:8px;
-}
+.actions{margin-top:8px;}
 button{
   width:100%;
   padding:8px;
@@ -129,24 +80,11 @@ button{
   border:2px solid var(--neon);
   cursor:pointer;
 }
-
-/* SUMMARY */
-.summary{
-  display:none;
-}
-.summary h1{
-  color:var(--yellow);
-}
-.summary p{
-  font-size:9px;
-  line-height:1.5;
-  margin:12px 0;
-}
+.summary{display:none;}
+.summary h1{color:var(--yellow);}
+.summary p{font-size:9px;line-height:1.5;margin:12px 0;}
 .final-multiplier{
-  margin:10px auto;
-  width:150px;
-  padding:14px;
-  font-size:20px;
+  margin:10px auto;width:150px;padding:14px;font-size:20px;
   border:3px solid var(--yellow);
   color:var(--yellow);
   box-shadow:0 0 30px var(--yellow);
@@ -162,20 +100,21 @@ button{
 
   <div class="duo">
     <h2>YOUR GOALSCORING DUO</h2>
-    <div class="duo-name" id="duoName">MBAPPÉ × HAALAND</div>
+    <div class="duo-name">MBAPPÉ × HAALAND</div>
   </div>
 
   <div class="multiplier-wrap">
     <div class="multiplier-label">CURRENT MULTIPLIER</div>
     <div class="multiplier-box" id="multiplierBox">1.00</div>
-    <div class="multiplier-hint">DO NOT GO OVER 2.00</div>
+    <div class="multiplier-hint">GOING TOO FAR GETS EXPENSIVE</div>
   </div>
 
   <div class="instructions">
     TURN OVER CARDS TO INCREASE YOUR MULTIPLIER.<br><br>
-    EACH CARD ADDS A RANDOM VALUE.<br>
-    PUSH YOUR LUCK — BUT DO NOT GO OVER <span style="color:var(--yellow)">2.00</span>.<br><br>
-    GO OVER AND YOUR MULTIPLIER RESETS TO <span style="color:var(--yellow)">1.00</span>.
+    SOME CARDS ARE DEAD.<br>
+    EVERY FLIP DRAINS VALUE.<br><br>
+    GO OVER <span style="color:var(--yellow)">2.00</span> OR HIT A DEAD CARD<br>
+    AND YOU RESET TO <span style="color:var(--yellow)">1.00</span>.
   </div>
 
   <div class="card-grid" id="cardGrid"></div>
@@ -188,88 +127,89 @@ button{
     <h1 id="summaryTitle"></h1>
     <p id="summaryText"></p>
     <div class="final-multiplier" id="finalMultiplier"></div>
-    <button onclick="resetGame()">RESET (DEV)</button>
   </div>
 
 </div>
 
 <script>
-'use strict';
-
-/* CONFIG */
-const CARD_COUNT = 20;
-
-/* STATE */
 let multiplier = 1.00;
 let locked = false;
 
-/* ELEMENTS */
+const CARD_COUNT = 20;
+const BUST_COUNT = 4; // hidden instant-fail cards
+
 const cardGrid = document.getElementById('cardGrid');
 const multiplierBox = document.getElementById('multiplierBox');
 const summary = document.getElementById('summary');
 const summaryTitle = document.getElementById('summaryTitle');
 const summaryText = document.getElementById('summaryText');
 const finalMultiplier = document.getElementById('finalMultiplier');
+const stickBtn = document.getElementById('stickBtn');
 
-/* INIT */
-buildCards();
+let bustIndexes = [];
 
-/* BUILD CARDS */
+init();
+
+function init(){
+  bustIndexes = shuffle([...Array(CARD_COUNT).keys()]).slice(0,BUST_COUNT);
+  buildCards();
+}
+
 function buildCards(){
   cardGrid.innerHTML='';
   for(let i=0;i<CARD_COUNT;i++){
     const card=document.createElement('div');
-    card.className='card face-down';
+    card.className='card';
     card.textContent='CARD';
-    card.onclick=()=>revealCard(card);
+    card.onclick=()=>revealCard(card,i);
     cardGrid.appendChild(card);
   }
 }
 
-/* REVEAL CARD */
-function revealCard(card){
+function revealCard(card,index){
   if(locked || card.classList.contains('revealed')) return;
 
-  /* Biased random: typically 0.08–0.35, occasional higher spike */
-  let value = Math.random() * 0.3 + 0.05;
-  if(Math.random() > 0.85){
-    value += Math.random() * 0.25;
-  }
-  value = +value.toFixed(2);
-
-  multiplier = +(multiplier + value).toFixed(2);
-
-  card.classList.remove('face-down');
   card.classList.add('revealed');
-  card.textContent='+' + value.toFixed(2);
 
-  updateMultiplier();
+  // escalating entropy
+  const decay = +(0.05 + (multiplier - 1) * 0.08).toFixed(2);
+  multiplier = +(multiplier - decay).toFixed(2);
+
+  if(bustIndexes.includes(index)){
+    bust();
+    card.textContent='☠';
+    return;
+  }
+
+  let gain = Math.random()*0.25 + 0.05;
+  gain = +gain.toFixed(2);
+
+  multiplier = +(multiplier + gain).toFixed(2);
+  card.textContent = '+' + gain.toFixed(2);
+
+  update();
 
   if(multiplier > 2){
     bust();
   }
 }
 
-/* UPDATE DISPLAY */
-function updateMultiplier(){
+function update(){
   multiplierBox.textContent = multiplier.toFixed(2);
 }
 
-/* BUST */
 function bust(){
   locked = true;
   multiplier = 1.00;
-
   setTimeout(()=>{
     showSummary(
       'BUSTED',
-      'YOU PUSHED TOO FAR.<br>MULTIPLIER RESET.',
+      'RISK OVERREACHED.<br>MULTIPLIER RESET.',
       multiplier
     );
-  },700);
+  },600);
 }
 
-/* STICK */
 stickBtn.onclick=()=>{
   if(locked) return;
   locked=true;
@@ -280,26 +220,21 @@ stickBtn.onclick=()=>{
   );
 };
 
-/* SUMMARY */
 function showSummary(title,text,value){
   summaryTitle.innerHTML=title;
   summaryText.innerHTML=text;
   finalMultiplier.textContent=value.toFixed(2);
-
   cardGrid.style.display='none';
   document.querySelector('.actions').style.display='none';
   summary.style.display='block';
 }
 
-/* RESET (DEV ONLY) */
-function resetGame(){
-  multiplier=1.00;
-  locked=false;
-  multiplierBox.textContent='1.00';
-  summary.style.display='none';
-  cardGrid.style.display='grid';
-  document.querySelector('.actions').style.display='block';
-  buildCards();
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
 }
 </script>
 
