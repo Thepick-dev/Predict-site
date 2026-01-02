@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOALSTORM! — WORLD CUP 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+:root{
+  --panel:#0b0b1f;
+  --neon:#00f6ff;
+  --dim:#666;
+  --cyan:#00F6FF;
+  --yellow:#FFD60A;
+  --pink:#FF2FC7;
+  --purple:#D94CFF;
+  --ok:#22ff88;
+  --warn:#ffcc00;
+  --white:#F7F7F2;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:radial-gradient(circle at top,#0c0c2a,#000);
+  color:#e8faff;
+  font-family:"Press Start 2P",monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+/* NAV */
+.nav{
+  width:100%;max-width:960px;
+  display:flex;justify-content:space-around;
+  margin:16px auto 10px;padding:0 10px;gap:6px;
+}
+.nav a{
+  flex:1;
+  font-size:10px;
+  padding:12px 4px;
+  color:#9aa;
+  text-decoration:none;
+  border:1px solid rgba(0,246,255,.25);
+  box-shadow:0 0 6px rgba(0,246,255,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.nav a.active{
+  color:var(--purple);
+  border:2px solid var(--purple);
+  box-shadow:0 0 25px var(--purple);
+  animation:pulse 1.1s infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 10px var(--purple);}
+  50%{box-shadow:0 0 35px var(--purple);}
+}
+/* BANNER */
+.banner-slot{width:100%;max-width:960px;margin-bottom:20px;}
+.banner-slot img{width:100%;display:block;}
+/* PANELS */
+.panel{
+  width:100%;max-width:960px;
+  background:var(--panel);
+  border:2px solid var(--neon);
+  box-shadow:0 0 25px rgba(0,246,255,.35);
+  padding:20px;margin-bottom:20px;
+}
+h1{font-size:18px;margin-bottom:16px;color:var(--neon);}
+.instructions{
+  font-size:12px;
+  line-height:1.6;
+  color:var(--yellow);
+  margin-bottom:20px;
+}
+/* INPUTS */
+input{
+  width:100%;padding:10px;margin:8px 0;
+  background:#000;color:#e8faff;
+  border:2px solid var(--neon);
+  font-family:inherit;font-size:10px;
+}
+input::placeholder{color:var(--neon);}
+/* BUTTONS */
+button{
+  font-family:inherit;
+  font-size:10px;
+  padding:6px 0;
+  width:32px;
+  background:#000;
+  color:var(--neon);
+  border:2px solid var(--neon);
+  cursor:pointer;
+}
+button:disabled{opacity:.35;cursor:not-allowed;}
+button[data-o="N"].selected{
+  background:var(--cyan);color:#000;box-shadow:0 0 12px var(--cyan);
+}
+button[data-o="ET"].selected{
+  background:var(--yellow);color:#000;box-shadow:0 0 12px var(--yellow);
+}
+button[data-o="P"].selected{
+  background:var(--pink);color:#000;box-shadow:0 0 12px var(--pink);
+}
+/* GRID */
+.bracket-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+@media(max-width:700px){
+  .bracket-grid{grid-template-columns:1fr;}
+}
+.match{border:1px solid var(--dim);padding:8px;}
+.team-row{display:flex;gap:6px;margin-bottom:4px;align-items:center;}
+.team-name{flex:1;text-align:left;font-size:10px;color:var(--neon);}
+.stage-title{color:var(--yellow);font-size:12px;margin:20px 0 8px;}
+/* LOCK BUTTON */
+#lockBtn{
+  display:block;
+  margin:24px auto 0;
+  width:auto;
+  padding:14px 22px;
+  font-size:11px;
+  letter-spacing:1px;
+  border-color:var(--purple);
+}
+#lockBtn:not(:disabled){
+  color:var(--purple);
+  box-shadow:0 0 18px var(--purple);
+  animation:pulse 1.2s infinite;
+}
+
+/* POPUP OVERLAY */
+.popup-overlay{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.85);
+  z-index:999;
+  align-items:center;
+  justify-content:center;
+  padding:8px;
+  overflow-y:auto;
+}
+.popup-overlay.active{display:flex;}
+
+/* PSBP STYLES */
+.psbp-panel{
+  width:100%;
+  max-width:520px;
+  background:var(--panel);
+  border:3px solid var(--pink);
+  box-shadow:0 0 35px rgba(255,47,199,.45);
+  padding:10px;
+  text-align:center;
+  margin:auto;
+}
+.psbp-panel h1{font-size:12px;color:var(--pink);margin-bottom:6px;}
+.psbp-panel h2{font-size:8px;color:var(--yellow);margin-bottom:4px;}
+.duo{margin-bottom:8px;}
+.select-duo{margin-bottom:8px;}
+.multiplier-wrap{margin:6px 0;}
+.multiplier-label{font-size:8px;color:var(--yellow);}
+.multiplier-box{
+  margin:4px auto;width:80px;padding:6px;font-size:14px;
+  border:3px solid var(--pink);color:var(--pink);
+  box-shadow:0 0 20px var(--pink);
+}
+.psbp-instructions{
+  font-size:6px;line-height:1.3;margin:6px 0;color:var(--white);
+}
+.card-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:4px;
+  margin-bottom:8px;
+}
+.card{
+  position:relative;
+  height:40px;
+  border:2px solid var(--cyan);
+  background:#1a1a2e;
+  color:var(--cyan);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:11px;
+  cursor:pointer;
+  box-shadow:0 0 10px rgba(0,246,255,.35);
+}
+.card-front{
+  position:absolute;
+  top:0;left:0;width:100%;height:100%;
+  background:#2a2a4e;
+  display:none;
+}
+.card-number{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-weight:bold;font-size:8px;
+  color:var(--ok);
+  text-shadow:0 0 8px var(--ok);
+  display:none;
+}
+.card.revealed .card-number,.card.revealed .card-front{
+  display:block;
+}
+.card.revealed{
+  border-color:var(--ok);
+  box-shadow:0 0 14px var(--ok);
+  cursor:default;
+}
+.card.negative .card-number{
+  color:var(--warn);
+  text-shadow:0 0 8px var(--warn);
+}
+.cumulative-stats{
+  font-size:7px;
+  line-height:1.4;
+  margin:8px 0;
+  color:var(--white);
+}
+.actions{margin:8px 0;}
+.psbp-panel button,.psbp-panel select{
+  width:100%;
+  padding:8px;
+  font-family:inherit;
+  font-size:8px;
+  background:#000;
+  color:var(--cyan);
+  border:2px solid var(--cyan);
+  cursor:pointer;
+}
+#stickBtn{
+  border:3px solid var(--yellow);
+  color:var(--yellow);
+  box-shadow:0 0 20px rgba(255,214,10,.4);
+  font-size:9px;
+  padding:10px;
+}
+select{
+  font-family:"Press Start 2P",monospace;
+}
+select option{
+  background:#000;
+  color:var(--cyan);
+}
+
+/* FINAL SUMMARY */
+.final-summary{
+  width:100%;
+  max-width:600px;
+  background:var(--panel);
+  border:3px solid var(--yellow);
+  box-shadow:0 0 35px var(--yellow);
+  padding:16px;
+  text-align:center;
+  margin:auto;
+}
+.final-summary h1{
+  color:var(--warn);
+  font-size:14px;
+  margin-bottom:12px;
+}
+.summary-section{
+  margin:12px 0;
+  padding:10px;
+  border:1px solid var(--dim);
+  text-align:left;
+}
+.summary-section h3{
+  color:var(--yellow);
+  font-size:10px;
+  margin-bottom:8px;
+}
+.summary-info{
+  font-size:8px;
+  line-height:1.6;
+  color:var(--cyan);
+}
+.duo-display{
+  font-size:10px;
+  color:var(--pink);
+  margin:8px 0;
+}
+.final-multiplier{
+  margin:12px auto;
+  width:120px;
+  padding:10px;
+  font-size:20px;
+  border:3px solid var(--yellow);
+  color:var(--yellow);
+  box-shadow:0 0 25px var(--yellow);
+}
+.summary-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+.summary-buttons button{
+  flex:1;
+  padding:10px;
+  font-size:9px;
+  width:auto;
+}
+</style>
+</head>
+<body>
+<div class="nav">
+  <a href="index.html">HOME</a>
+  <a href="predict.html" class="active">PLAY</a>
+  <a href="scores.html">SCORES</a>
+  <a href="rules.html">RULES</a>
+</div>
+<div class="banner-slot">
+  <img src="banner1.jpg" alt="GOALSTORM BANNER">
+</div>
+<div class="panel">
+<h1>PLAYER ENTRY TERMINAL</h1>
+<input id="user" placeholder="USERNAME">
+<input id="email" placeholder="EMAIL">
+<input id="goals" type="number" placeholder="TOTAL GOALS (L32+L16+QF)">
+</div>
+<div class="panel">
+<h1>KNOCKOUT BRACKET</h1>
+<div class="instructions">
+PICK THE TEAM YOU THINK WILL WIN EACH MATCH AND THEIR METHOD OF VICTORY<br>
+(N = AFTER NORMAL TIME, ET = AFTER ET, P = ON PENALTIES)
+</div>
+<div class="stage-title">LAST 32</div>
+<div class="bracket-grid" id="r32"></div>
+<div class="stage-title">LAST 16</div>
+<div class="bracket-grid" id="r16"></div>
+<div class="stage-title">QUARTER FINALS</div>
+<div class="bracket-grid" id="qf"></div>
+<button id="lockBtn" disabled>LOCK IN &amp; PROCEED TO PLAYER SELECTOR</button>
+</div>
+
+<!-- POPUP FOR PSBP -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="psbp-panel" id="psbpPanel">
+    <h1>DANGEROUS DUO</h1>
+    <div class="duo">
+      <h2>CHOOSE YOUR DUO</h2>
+      <select id="duoSelect" class="select-duo">
+        <option>RICE × HAALAND</option>
+        <option>MESSI × NEYMAR</option>
+        <option>RONALDO × MBAPPÉ</option>
+        <option>LEWANDOWSKI × KANE</option>
+        <option>SALAH × STERLING</option>
+        <option>KDB × BERNARDO</option>
+        <option>DEBRUYNE × FODEN</option>
+        <option>HAALAND × MOUNT</option>
+        <option>NEYMAR × MBAPPÉ</option>
+        <option>RONALDO × SANCHEZ</option>
+        <option>SON × KANE</option>
+        <option>VARDY × GREALISH</option>
+        <option>HAZARD × BENZEMA</option>
+        <option>FIRMINO × MANÉ</option>
+        <option>DEPAY × DEST</option>
+      </select>
+    </div>
+    <div class="multiplier-wrap">
+      <div class="multiplier-label">CURRENT MULTIPLIER</div>
+      <div class="multiplier-box" id="multiplierBox">1.00</div>
+    </div>
+    <div class="psbp-instructions">
+      DUO'S POINTS × FINAL MULTIPLIER<br>
+      TURN CARDS TO CHANGE MULTIPLIER<br>
+      SOME ADD, SOME SUBTRACT (YOU CAN NEVER GO BELOW 1)<br>
+      5 DEAD CARDS WORTH 1.01<br>
+      GO OVER 2.00 OR DRAW A DEAD CARD = MULTIPLIER OF 1 LOCKED IN<br>
+      GET AS CLOSE TO 2 AS POSSIBLE WITHOUT GOING OVER!<br>
+      PRESS 'STICK & SUBMIT PICKS' TO LOCK IN
+    </div>
+    <div class="actions">
+      <button id="stickBtn">STICK & SUBMIT PICKS</button>
+    </div>
+    <div class="card-grid" id="cardGrid"></div>
+    <div class="cumulative-stats" id="cumulativeStats">
+      UNREVEALED: +<span id="positiveSum">0.00</span> / -<span id="negativeSum">0.00</span><br>
+      (DEAD CARDS = +1.01)
+    </div>
+  </div>
+
+  <!-- FINAL SUMMARY -->
+  <div class="final-summary" id="finalSummary" style="display:none;">
+    <h1>ENTRY COMPLETE!</h1>
+    
+    <div class="summary-section">
+      <h3>PLAYER INFO</h3>
+      <div class="summary-info" id="playerInfo"></div>
+    </div>
+    
+    <div class="summary-section">
+      <h3>BRACKET PREDICTIONS</h3>
+      <div class="summary-info" id="bracketSummary"></div>
+    </div>
+    
+    <div class="summary-section">
+      <h3>DANGEROUS DUO BONUS</h3>
+      <div class="duo-display" id="duoDisplay"></div>
+      <div class="final-multiplier" id="finalMultiplier"></div>
+      <div class="summary-info" id="bonusMessage"></div>
+    </div>
+    
+    <div class="summary-buttons">
+      <button id="homeBtn">RETURN TO HOME</button>
+      <button id="resetBtn">RESET (DEV)</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const TEAMS=[
+"FRANCE","SPAIN","GERMANY","ITALY","BRAZIL","ARGENTINA","ENGLAND","PORTUGAL",
+"SENEGAL","BELGIUM","NETHERLANDS","USA","MEXICO","CANADA","JAPAN","S KOREA",
+"AUSTRALIA","COSTA RICA","MOROCCO","EGYPT","IRAN","QATAR","URUGUAY","CHILE",
+"SWITZERLAND","DENMARK","SWEDEN","POLAND","AUSTRIA","NORWAY","SCOTLAND","WALES"
+];
+const state={r32:Array(32).fill(null),r16:Array(16).fill(null),qf:Array(8).fill(null)};
+let mainPageData={};
+
+// MAIN PAGE FUNCTIONS
+function buildRound(container,teams,stage){
+  container.innerHTML='';
+  teams.forEach((t,i)=>{
+    if(i%2!==0)return;
+    const m=document.createElement('div');
+    m.className='match';
+    [0,1].forEach(offset=>{
+      const idx=i+offset;
+      const r=document.createElement('div');
+      r.className='team-row';
+      r.innerHTML=`<span class="team-name">${teams[idx]||'TBD'}</span>`;
+      ['N','ET','P'].forEach(o=>{
+        const b=document.createElement('button');
+        b.textContent=o;
+        b.dataset.o=o;
+        b.onclick=()=>{
+          const base=Math.floor(idx/2)*2;
+          state[stage][base]=null;
+          state[stage][base+1]=null;
+          m.querySelectorAll('button').forEach(x=>x.classList.remove('selected'));
+          b.classList.add('selected');
+          state[stage][idx]=o;
+          clearDownstream(stage);
+          propagate(stage);
+          refresh();
+        };
+        r.appendChild(b);
+      });
+      m.appendChild(r);
+    });
+    container.appendChild(m);
+  });
+}
+
+function clearDownstream(stage){
+  if(stage==='r32'){state.r16.fill(null);state.qf.fill(null);}
+  if(stage==='r16'){state.qf.fill(null);}
+}
+
+function propagate(stage){
+  if(stage==='r32'){
+    const adv=[];
+    for(let i=0;i<32;i+=2){
+      adv.push(state.r32[i]?TEAMS[i]:state.r32[i+1]?TEAMS[i+1]:null);
+    }
+    buildRound(r16,adv,'r16');
+  }
+  if(stage==='r16'){
+    const names=[...r16.querySelectorAll('.team-name')].map(n=>n.textContent);
+    const adv=[];
+    for(let i=0;i<16;i+=2){
+      adv.push(state.r16[i]?names[i]:state.r16[i+1]?names[i+1]:null);
+    }
+    buildRound(qf,adv,'qf');
+  }
+}
+
+function refresh(){
+  lockBtn.disabled=!(
+    user.value &&
+    email.value &&
+    goals.value &&
+    state.r32.every(Boolean) &&
+    state.r16.every(Boolean) &&
+    state.qf.every(Boolean)
+  );
+}
+
+buildRound(r32,TEAMS,'r32');
+
+// Lock button opens PSBP popup
+lockBtn.onclick=()=>{
+  mainPageData={
+    username:user.value,
+    email:email.value,
+    totalGoals:goals.value,
+    picks:{r32:[...state.r32],r16:[...state.r16],qf:[...state.qf]}
+  };
+  popupOverlay.classList.add('active');
+  initPSBP();
+};
+
+// PSBP FUNCTIONS
+let multiplier=1.00,locked=false;
+const CARD_COUNT=40,BUST_COUNT=5,NEGATIVE_CHANCE=0.35;
+const cardGrid=document.getElementById('cardGrid');
+const multiplierBox=document.getElementById('multiplierBox');
+const stickBtn=document.getElementById('stickBtn');
+const duoSelect=document.getElementById('duoSelect');
+const positiveSum=document.getElementById('positiveSum');
+const negativeSum=document.getElementById('negativeSum');
+const psbpPanel=document.getElementById('psbpPanel');
+const finalSummary=document.getElementById('finalSummary');
+const duoDisplay=document.getElementById('duoDisplay');
+const finalMultiplier=document.getElementById('finalMultiplier');
+const bonusMessage=document.getElementById('bonusMessage');
+const playerInfo=document.getElementById('playerInfo');
+const bracketSummary=document.getElementById('bracketSummary');
+const homeBtn=document.getElementById('homeBtn');
+const resetBtn=document.getElementById('resetBtn');
+
+let bustIndexes=[];
+let cardValues=[];
+let revealedCards=new Set();
+
+function initPSBP(){
+  bustIndexes=shuffle([...Array(CARD_COUNT).keys()]).slice(0,BUST_COUNT);
+  cardValues=[];
+  revealedCards=new Set();
+  for(let i=0;i<CARD_COUNT;i++){
+    if(bustIndexes.includes(i)){
+      cardValues[i]=1.01;
+    }else{
+      let value=Math.random()<NEGATIVE_CHANCE?-(Math.random()*0.3+0.05):Math.random()*0.35+0.05;
+      cardValues[i]=+value.toFixed(2);
+    }
+  }
+  buildCards();
+  multiplier=1.00;
+  locked=false;
+  multiplierBox.textContent=multiplier.toFixed(2);
+  updateCumulativeStats();
+  psbpPanel.style.display='block';
+  finalSummary.style.display='none';
+}
+
+function buildCards(){
+  cardGrid.innerHTML='';
+  for(let i=0;i<CARD_COUNT;i++){
+    const card=document.createElement('div');
+    card.className='card';
+    const frontDiv=document.createElement('div');
+    frontDiv.className='card-front';
+    const numberDiv=document.createElement('div');
+    numberDiv.className='card-number';
+    card.appendChild(frontDiv);
+    card.appendChild(numberDiv);
+    card.onclick=()=>revealCard(card,i,numberDiv);
+    cardGrid.appendChild(card);
+  }
+}
+
+function revealCard(card,index,numberDiv){
+  if(locked||card.classList.contains('revealed'))return;
+  card.classList.add('revealed');
+  revealedCards.add(index);
+  if(bustIndexes.includes(index)){
+    numberDiv.textContent='☠';
+    card.classList.add('negative');
+    bust();
+    return;
+  }
+  let value=cardValues[index];
+  multiplier=+(multiplier+value).toFixed(2);
+  if(multiplier<1)multiplier=1;
+  numberDiv.textContent=(value>0?'+':'')+value.toFixed(2);
+  if(value<0)card.classList.add('negative');
+  update();
+  updateCumulativeStats();
+  if(multiplier>2)bust();
+}
+
+function updateCumulativeStats(){
+  let posSum=0,negSum=0;
+  for(let i=0;i<CARD_COUNT;i++){
+    if(!revealedCards.has(i)){
+      if(cardValues[i]>0)posSum+=cardValues[i];
+      else negSum+=Math.abs(cardValues[i]);
+    }
+  }
+  positiveSum.textContent=posSum.toFixed(2);
+  negativeSum.textContent=negSum.toFixed(2);
+}
+
+function update(){multiplierBox.textContent=multiplier.toFixed(2);}
+
+function bust(){
+  locked=true;
+  multiplier=1.00;
+  setTimeout(()=>{showFinalSummary('BUSTED — YOU WENT OVER 2!',multiplier)},600);
+}
+
+stickBtn.onclick=()=>{
+  if(locked)return;
+  locked=true;
+  showFinalSummary('',multiplier);
+};
+
+function showFinalSummary(title,value){
+  psbpPanel.style.display='none';
+  finalSummary.style.display='block';
+  
+  // Player info
+  playerInfo.innerHTML=`
+    USERNAME: ${mainPageData.username}<br>
+    EMAIL: ${mainPageData.email}<br>
+    TOTAL GOALS PREDICTION: ${mainPageData.totalGoals}
+  `;
+  
+  // Bracket summary
+  let bracketHTML='';
+  const r32Teams=TEAMS;
+  const r16Names=[...document.querySelectorAll('#r16 .team-name')].map(n=>n.textContent);
+  const qfNames=[...document.querySelectorAll('#qf .team-name')].map(n=>n.textContent);
+  
+  bracketHTML+='<strong>LAST 32 WINNERS:</strong><br>';
+  for(let i=0;i<32;i+=2){
+    const winner=mainPageData.picks.r32[i]?r32Teams[i]:r32Teams[i+1];
+    const method=mainPageData.picks.r32[i]||mainPageData.picks.r32[i+1];
+    bracketHTML+=`${winner} (${method}) `;
+  }
+  
+  bracketHTML+='<br><br><strong>LAST 16 WINNERS:</strong><br>';
+  for(let i=0;i<16;i+=2){
+    const winner=mainPageData.picks.r16[i]?r16Names[i]:r16Names[i+1];
+    const method=mainPageData.picks.r16[i]||mainPageData.picks.r16[i+1];
+    bracketHTML+=`${winner} (${method}) `;
+  }
+  
+  bracketHTML+='<br><br><strong>QUARTER FINAL WINNERS:</strong><br>';
+  for(let i=0;i<8;i+=2){
+    const winner=mainPageData.picks.qf[i]?qfNames[i]:qfNames[i+1];
+    const method=mainPageData.picks.qf[i]||mainPageData.picks.qf[i+1];
+    bracketHTML+=`${winner} (${method}) `;
+  }
+  
+  bracketSummary.innerHTML=bracketHTML;
+  
+  // Bonus info
+  duoDisplay.textContent=duoSelect.value;
+  finalMultiplier.textContent=value.toFixed(2);
+  bonusMessage.textContent=title||'MULTIPLIER LOCKED IN!';
+}
+
+homeBtn.onclick=()=>{
+  window.location.href='index.html';
+};
+
+resetBtn.onclick=()=>{
+  popupOverlay.classList.remove('active');
+  user.value='';
+  email.value='';
+  goals.value='';
+  state.r32.fill(null);
+  state.r16.fill(null);
+  state.qf.fill(null);
+  buildRound(r32,TEAMS,'r32');
+  buildRound(r16,Array(16).fill(null),'r16');
+  buildRound(qf,Array(8).fill(null),'qf');
+  refresh();
+};
+
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+</script>
+</body>
+</html>
