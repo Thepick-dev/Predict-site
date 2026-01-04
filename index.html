@@ -25,7 +25,6 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
 }
 @keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0;}}
 
-/* rest of your existing styles stay unchanged */
 /* NAV */
 .nav {
   width: 100%;
@@ -70,21 +69,82 @@ p.intro{font-size:10px;line-height:1.8;margin-bottom:24px;color:#e8faff;}
 .sys a:hover {color: var(--neon);}
 
 /* FORMS & BUTTONS */
-input{width:100%;padding:10px;margin:8px 0;background:#000;color:#e8faff;border:2px solid #888;font-family:inherit;font-size:10px;outline:none;}
+input[type="email"]{width:100%;padding:10px;margin:8px 0;background:#000;color:#e8faff;border:2px solid #888;font-family:inherit;font-size:10px;outline:none;}
 input::placeholder{color:#bcdfe3;}
 input:focus{border-color:var(--neon);box-shadow:0 0 6px rgba(0,246,255,.7), inset 0 0 4px rgba(0,246,255,.4);}
-button{padding:12px 20px;margin:10px;font-family:inherit;font-size:12px;background:#000;color:var(--neon);border:2px solid var(--neon);cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
-button:hover{background:var(--neon);color:#000;box-shadow:0 0 10px rgba(0,246,255,.7);}
-button:active,button:focus{box-shadow:0 0 6px rgba(0,246,255,.9);}
-button.mega-btn{font-size:14px;padding:16px 24px;border-width:3px;animation:pulse 2s infinite;}
-@keyframes pulse{0%{box-shadow:0 0 10px rgba(0,246,255,.7);}50%{box-shadow:0 0 22px rgba(0,246,255,.9), inset 0 0 6px rgba(0,246,255,.6);}100%{box-shadow:0 0 10px rgba(0,246,255,.7);}}
 
+/* 90s CHOICE BUTTONS */
+.choice-container { display: flex; justify-content: center; gap: 30px; margin-top: 20px; }
+button.choice-btn {
+  padding: 12px 30px;
+  font-family: inherit;
+  font-size: 14px;
+  background: #000;
+  color: var(--white);
+  border: 2px solid var(--dim);
+  cursor: pointer;
+  position: relative;
+  transition: border-color 0.2s;
+  text-transform: uppercase;
+}
+
+/* THE YELLOW TRIANGLE CURSOR */
+button.choice-btn::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0; 
+  height: 0; 
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid var(--yellow);
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.1s;
+}
+
+button.choice-btn:hover {
+  border-color: var(--yellow);
+  color: var(--yellow);
+  box-shadow: 0 0 10px rgba(255, 214, 10, 0.4);
+  padding-left: 40px; /* Make room for the triangle */
+}
+button.choice-btn:hover::before {
+  opacity: 1; /* Show triangle */
+}
+
+/* SUBMIT BUTTON */
+button.action-btn {
+  padding: 12px 20px; margin: 10px; font-family: inherit; font-size: 12px;
+  background: #000; color: var(--neon); border: 2px solid var(--neon);
+  cursor: pointer; transition: all 0.2s; text-transform: uppercase;
+}
+button.action-btn:hover:not(:disabled) {
+  background: var(--neon); color: #000; box-shadow: 0 0 10px rgba(0,246,255,.7);
+}
+button.action-btn:disabled {
+  border-color: var(--dim); color: var(--dim); cursor: not-allowed; opacity: 0.5;
+}
+
+/* MODALS */
 .overlay{position:fixed;inset:0;background:rgba(5,5,16,0.95);display:none;align-items:center;justify-content:center;z-index:100;}
 .modal-box{position:relative;max-width:500px;width:90%;border:3px solid var(--pink);padding:30px 20px;background:#000;box-shadow:0 0 16px rgba(255,47,199,0.35);}
-.close-btn{position:absolute;top:10px;right:10px;font-size:16px;color:var(--dim);cursor:pointer;background:none;border:none;padding:5px;}
-.close-btn:hover{color:var(--pink);text-shadow:0 0 6px rgba(255,47,199,.7);box-shadow:none;}
+.close-btn{position:absolute;top:5px;right:5px;font-size:12px;color:var(--dim);cursor:pointer;background:none;border:1px solid var(--dim);width:24px;height:24px;line-height:22px;text-align:center;padding:0;}
+.close-btn:hover{color:var(--pink);border-color:var(--pink);text-shadow:0 0 6px rgba(255,47,199,.7);}
 .modal-msg{font-size:10px;color:var(--pink);margin-bottom:16px;}
 .success-msg{display:none;color:var(--ok);font-size:12px;text-shadow:0 0 6px rgba(34,255,136,.7);margin-top:20px;}
+
+/* CHECKBOX GROUP */
+.chk-group { text-align: left; margin: 15px 0; font-size: 8px; color: var(--white); display: flex; flex-direction: column; gap: 8px; }
+.chk-group label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.chk-group a { color: var(--cyan); text-decoration: none; border-bottom: 1px dotted var(--cyan); }
+.chk-group a:hover { color: var(--ok); border-bottom-style: solid; }
+.chk-group input[type="checkbox"] { width: auto; margin: 0; cursor: pointer; accent-color: var(--pink); }
+
+/* PITHY POPUP STYLE */
+#noOverlay .modal-box { border-color: var(--warn); box-shadow: 0 0 16px rgba(255, 204, 0, 0.35); animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both; }
+@keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
 
 footer{width:100%;max-width:960px;margin:20px 0;padding:20px;border-top:1px solid var(--dim);font-size:8px;}
 footer a{color:var(--dim);text-decoration:none;transition:color 0.2s;}
@@ -95,7 +155,6 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 </head>
 <body>
 
-<!-- LAUNCH SCREEN -->
 <div id="launch-screen">
   <h1>GOALSURGE!</h1>
   <div id="press-enter">PRESS ENTER OR CLICK TO START</div>
@@ -114,25 +173,52 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
   <h1>WELCOME TO GOALSURGE!</h1>
   <p class="intro">WORLD CUP 2026 IS COMING. GET SET FOR THE ULTIMATE PREDICTION CHALLENGE.</p>
   <div class="sys">READ THE RULES <a href="rules.html">HERE</a>. ARE YOU READY?</div>
-  <button id="registerBtn" class="mega-btn">REGISTER INTEREST</button>
+  
+  <div class="choice-container">
+    <button id="btnYes" class="choice-btn">YES</button>
+    <button id="btnNo" class="choice-btn">NO</button>
+  </div>
 </div>
 
 <footer>
-  <a href="privacy.html">PRIVACY POLICY</a> | © 2026 GOALSURGE
+  <a href="privacy.html">PRIVACY POLICY</a> | <a href="terms.html">TERMS & CONDITIONS</a> | © 2026 GOALSURGE
 </footer>
 
 <div class="overlay" id="regOverlay">
   <div class="modal-box">
-    <button class="close-btn" id="closeBtn">X</button>
+    <button class="close-btn" id="closeReg">X</button>
     <h2>STAY UPDATED</h2>
     <div class="modal-msg" id="modalFormArea">
       BE THE FIRST TO KNOW WHEN KICK-OFF APPROACHES.
       <input type="email" id="regEmail" placeholder="ENTER EMAIL ADDRESS">
-      <button id="submitRegBtn">SUBMIT</button>
+      
+      <div class="chk-group">
+        <label>
+          <input type="checkbox" id="chkPrivacy">
+          <span>I AGREE TO THE <a href="privacy.html" target="_blank">PRIVACY POLICY</a></span>
+        </label>
+        <label>
+          <input type="checkbox" id="chkTerms">
+          <span>I AGREE TO THE <a href="terms.html" target="_blank">GENERAL TERMS</a></span>
+        </label>
+      </div>
+
+      <button id="submitRegBtn" class="action-btn" disabled>SUBMIT</button>
       <div class="sys" id="regError"></div>
     </div>
     <div class="success-msg" id="regSuccess">
-      THANKS! YOU ARE ON THE LIST.
+      THANKS! YOU ARE ON THE LIST.<br>PREPARE YOURSELF.
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="noOverlay">
+  <div class="modal-box">
+    <button class="close-btn" id="closeNo">X</button>
+    <h2 style="color:var(--warn);">NOT READY?</h2>
+    <div class="modal-msg" style="color:var(--white);">
+      WEAKNESS DETECTED.<br><br>
+      GO READ THE <a href="rules.html" style="color:var(--warn);">RULES</a> AND COME BACK WHEN YOU HAVE THE GUTS.
     </div>
   </div>
 </div>
@@ -158,33 +244,81 @@ document.addEventListener('keydown', function(e){
 });
 launchScreen.addEventListener('click', hideLaunchScreen);
 
-// REGISTER MODAL
-const registerBtn = document.getElementById('registerBtn');
+// ELEMENTS
+const btnYes = document.getElementById('btnYes');
+const btnNo = document.getElementById('btnNo');
+
+// REG ELEMENTS
 const regOverlay = document.getElementById('regOverlay');
-const closeBtn = document.getElementById('closeBtn');
+const closeReg = document.getElementById('closeReg');
 const submitRegBtn = document.getElementById('submitRegBtn');
 const regEmail = document.getElementById('regEmail');
 const regFormArea = document.getElementById('modalFormArea');
 const regSuccess = document.getElementById('regSuccess');
 const regError = document.getElementById('regError');
+const chkPrivacy = document.getElementById('chkPrivacy');
+const chkTerms = document.getElementById('chkTerms');
 
-registerBtn.onclick = () => { regOverlay.style.display = 'flex'; regEmail.focus(); };
-closeBtn.onclick = () => { regOverlay.style.display = 'none'; resetModal(); };
+// NO ELEMENTS
+const noOverlay = document.getElementById('noOverlay');
+const closeNo = document.getElementById('closeNo');
+
+// LOGIC
+
+// 1. CLICK NO
+btnNo.onclick = () => {
+  noOverlay.style.display = 'flex';
+};
+closeNo.onclick = () => {
+  noOverlay.style.display = 'none';
+};
+
+// 2. CLICK YES
+btnYes.onclick = () => {
+  regOverlay.style.display = 'flex';
+  regEmail.focus();
+};
+closeReg.onclick = () => {
+  regOverlay.style.display = 'none';
+  resetModal();
+};
+
+// 3. CHECKBOX VALIDATION
+function updateSubmitState() {
+  if (chkPrivacy.checked && chkTerms.checked) {
+    submitRegBtn.disabled = false;
+  } else {
+    submitRegBtn.disabled = true;
+  }
+}
+
+chkPrivacy.addEventListener('change', updateSubmitState);
+chkTerms.addEventListener('change', updateSubmitState);
+
+// 4. SUBMIT REGISTRATION
 submitRegBtn.onclick = () => {
   const email = regEmail.value.trim();
+  // Basic validation
   if(email.includes('@') && email.length > 5){
+    // Mock Submission
     regFormArea.style.display = 'none';
     regSuccess.style.display = 'block';
     regError.textContent = '';
-  } else { regError.textContent = 'INVALID EMAIL DETECTED'; }
+  } else {
+    regError.textContent = 'INVALID EMAIL DETECTED';
+  }
 };
+
 function resetModal(){
   setTimeout(()=>{
     regFormArea.style.display = 'block';
     regSuccess.style.display = 'none';
     regEmail.value = '';
     regError.textContent = '';
-  },500);
+    chkPrivacy.checked = false;
+    chkTerms.checked = false;
+    submitRegBtn.disabled = true;
+  }, 500);
 }
 </script>
 </body>
