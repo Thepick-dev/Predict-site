@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GOALSTORM! — SCORES</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --panel:#0b0b1f;
+  --neon:#00f6ff;
+  --warn:#ffcc00;
+  --dim:#666;
+  --yellow:#FFD60A;
+  --orange:#FF5E00;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:radial-gradient(circle at top,#0c0c2a,#000);
+  color:#e8faff;
+  font-family:"Press Start 2P",monospace;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+
+/* NAV */
+.nav{max-width:960px;width:100%;display:flex;justify-content:space-around;margin:16px 0;}
+.nav a{font-size:10px;color:var(--dim);text-decoration:none;padding:10px;}
+.nav a.active{color:var(--orange);border:2px solid var(--orange);}
+
+/* PANEL */
+.panel{
+  width:100%;
+  max-width:960px;
+  background:var(--panel);
+  border:2px solid var(--neon);
+  box-shadow:0 0 25px rgba(0,246,255,.35);
+  padding:30px 20px;
+  margin-bottom:20px;
+}
+
+h1{
+  font-size:16px;
+  color:var(--neon);
+  margin-bottom:20px;
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10px;
+}
+th,td{
+  padding:10px 6px;
+  border-bottom:1px solid var(--dim);
+}
+th{color:var(--warn);}
+tr:hover{background:#060620;cursor:pointer;}
+
+/* DETAILS GRID */
+.details{display:none;background:#060620;}
+.detail-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  padding:12px;
+  font-size:9px;
+  color:var(--yellow);
+}
+.pick{
+  border:1px solid var(--dim);
+  padding:6px;
+  text-align:center;
+}
+
+/* FOOTER */
+footer{
+  max-width:960px;
+  width:100%;
+  font-size:8px;
+  color:var(--dim);
+  text-align:center;
+  padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="nav">
+  <a href="index.html">HOME</a>
+  <a href="predict.html">PLAY</a>
+  <a href="scores.html" class="active">SCORES</a>
+  <a href="rules.html">RULES</a>
+</div>
+
+<div class="panel">
+  <h1>ROUND 1 STANDINGS</h1>
+
+  <table id="leaderboard">
+    <thead>
+      <tr>
+        <th>POS</th>
+        <th>PLAYER</th>
+        <th>PTS</th>
+        <th>TB</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<footer>© 2026 GOALSTORM</footer>
+
+<script>
+const tbody = document.querySelector("#leaderboard tbody");
+
+fetch("data/round1.json")
+  .then(r => r.json())
+  .then(players => {
+
+    players.forEach((p, i) => {
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${i + 1}</td>
+        <td>${p.username}</td>
+        <td>0</td>
+        <td>${p.tiebreaker}</td>
+      `;
+      row.onclick = () => toggle(`d${i}`);
+      tbody.appendChild(row);
+
+      const picks = [
+        p.player_1, p.player_2, p.player_3,
+        p.group_A_2nd, p.group_B_2nd, p.group_C_2nd, p.group_D_2nd,
+        p.group_E_2nd, p.group_F_2nd, p.group_G_2nd, p.group_H_2nd,
+        p.group_I_2nd, p.group_J_2nd, p.group_K_2nd, p.group_L_2nd,
+        p.third_1, p.third_2, p.third_3, p.third_4,
+        p.third_5, p.third_6, p.third_7, p.third_8
+      ];
+
+      const detail = document.createElement("tr");
+      detail.id = `d${i}`;
+      detail.className = "details";
+      detail.innerHTML = `
+        <td colspan="4">
+          <div class="detail-grid">
+            ${picks.map(x => `<div class="pick">${x || "-"}</div>`).join("")}
+          </div>
+        </td>
+      `;
+      tbody.appendChild(detail);
+    });
+  });
+
+function toggle(id){
+  document.querySelectorAll(".details").forEach(d=>{
+    if(d.id !== id) d.style.display = "none";
+  });
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === "table-row" ? "none" : "table-row";
+}
+</script>
+
+</body>
+</html>
