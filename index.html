@@ -13,6 +13,19 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8faff;font-family:"Press Start 2P",monospace;text-align:center;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
 
+/* LAUNCH SCREEN */
+#launch-screen {
+  position:fixed;inset:0;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;cursor:pointer;
+}
+#launch-screen h1{
+  font-size:28px;color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 20px var(--cyan);margin-bottom:20px;
+}
+#press-enter{
+  font-size:12px;color:#fff;text-shadow:0 0 4px #fff;animation:blink 1s infinite;
+}
+@keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0;}}
+
+/* rest of your existing styles stay unchanged */
 /* NAV */
 .nav {
   width: 100%;
@@ -25,6 +38,8 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
   margin: 16px auto 10px;
   padding: 0 10px;
   gap: 6px;
+  opacity:0;
+  transition: opacity 0.8s ease;
 }
 
 .nav a {
@@ -39,170 +54,51 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
   position: relative;
 }
 
-.nav a:hover {
-  color: var(--cyan);
-}
+.nav a:hover { color: var(--cyan); }
+.nav a.active { color: var(--pink); border: 2px solid var(--pink); background:#000; padding:10px 4px;
+  box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2); animation: power-surge-pink 1.2s infinite ease-in-out; }
+@keyframes power-surge-pink {0%,100%{background:#000;box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2);}
+50%{background:#1a0015; box-shadow:0 0 15px var(--pink),0 0 25px rgba(255,47,199,.3),inset 0 0 20px rgba(255,47,199,.4);}}
 
-.nav a.active {
-  color: var(--pink);
-  border: 2px solid var(--pink);
-  background: #000;
-  padding: 10px 4px;
-  box-shadow: 0 0 5px var(--pink),
-              inset 0 0 10px rgba(255,47,199,.2);
-  animation: power-surge-pink 1.2s infinite ease-in-out;
-}
-
-@keyframes power-surge-pink {
-  0%, 100% {background:#000; box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2);}
-  50% {background:#1a0015; box-shadow:0 0 15px var(--pink),0 0 25px rgba(255,47,199,.3), inset 0 0 20px rgba(255,47,199,.4);}
-}
-
-/* PANELS & GENERAL */
-.banner{max-width:100%;height:auto;display:block;margin-bottom:20px;}
-.panel{
-  width:100%;
-  max-width:960px;
-  background:var(--panel);
-  border:2px solid var(--neon);
-  box-shadow:0 0 18px rgba(0,246,255,.28);
-  padding:30px 20px;
-  margin-bottom:20px;
-  flex:1;
-}
-h1{
-  font-size:20px;
-  margin:0 0 20px;
-  color:var(--neon);
-  text-shadow:0 0 6px rgba(0,246,255,.65);
-  line-height:1.4;
-  transition: 0.3s;
-}
-h1.arcade-flash {
-  animation: neon-flash 1s infinite alternate;
-}
-@keyframes neon-flash {
-  0% { color: #00f6ff; text-shadow:0 0 6px #00f6ff, 0 0 12px #00f6ff; }
-  50% { color: #ff2fc7; text-shadow:0 0 10px #ff2fc7,0 0 20px #ff2fc7; }
-  100% { color: #00f6ff; text-shadow:0 0 6px #00f6ff,0 0 12px #00f6ff; }
-}
-
+.banner{max-width:100%;height:auto;display:block;margin-bottom:20px;opacity:0;transition:opacity 1s ease;}
+.panel{width:100%;max-width:960px;background:var(--panel);border:2px solid var(--neon);box-shadow:0 0 18px rgba(0,246,255,.28);padding:30px 20px;margin-bottom:20px;flex:1;opacity:0;transition:opacity 1s ease;}
+h1{font-size:20px;margin:0 0 20px;color:var(--neon);text-shadow:0 0 6px rgba(0,246,255,.65);line-height:1.4;}
+h2{font-size:16px;color:var(--yellow);margin-bottom:14px;text-shadow:0 0 5px rgba(255,214,10,.6);}
 p.intro{font-size:10px;line-height:1.8;margin-bottom:24px;color:#e8faff;}
 .sys{margin:12px 0;font-size:12px;color:var(--warn);line-height:1.8;}
 .sys a {color: inherit; text-decoration: underline; cursor: pointer;}
 .sys a:hover {color: var(--neon);}
 
 /* FORMS & BUTTONS */
-input{
-  width:100%;
-  padding:10px;
-  margin:8px 0;
-  background:#000;
-  color:#e8faff;
-  border:2px solid #888;
-  font-family:inherit;
-  font-size:10px;
-  outline:none;
-}
+input{width:100%;padding:10px;margin:8px 0;background:#000;color:#e8faff;border:2px solid #888;font-family:inherit;font-size:10px;outline:none;}
 input::placeholder{color:#bcdfe3;}
-input:focus{
-  border-color:var(--neon);
-  box-shadow:0 0 6px rgba(0,246,255,.7), inset 0 0 4px rgba(0,246,255,.4);
-}
-button{
-  padding:12px 20px;
-  margin:10px;
-  font-family:inherit;
-  font-size:12px;
-  background:#000;
-  color:var(--neon);
-  border:2px solid var(--neon);
-  cursor:pointer;
-  transition:all 0.2s;
-  text-transform:uppercase;
-}
-button:hover{
-  background:var(--neon);
-  color:#000;
-  box-shadow:0 0 10px rgba(0,246,255,.7);
-}
-button:active,
-button:focus{
-  box-shadow:0 0 6px rgba(0,246,255,.9);
-}
-button.mega-btn{
-  font-size:14px;
-  padding:16px 24px;
-  border-width:3px;
-  animation:pulse 2s infinite;
-}
-@keyframes pulse {
-  0%{box-shadow:0 0 10px rgba(0,246,255,.7);}
-  50%{box-shadow:0 0 22px rgba(0,246,255,.9), inset 0 0 6px rgba(0,246,255,.6);}
-  100%{box-shadow:0 0 10px rgba(0,246,255,.7);}
-}
+input:focus{border-color:var(--neon);box-shadow:0 0 6px rgba(0,246,255,.7), inset 0 0 4px rgba(0,246,255,.4);}
+button{padding:12px 20px;margin:10px;font-family:inherit;font-size:12px;background:#000;color:var(--neon);border:2px solid var(--neon);cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+button:hover{background:var(--neon);color:#000;box-shadow:0 0 10px rgba(0,246,255,.7);}
+button:active,button:focus{box-shadow:0 0 6px rgba(0,246,255,.9);}
+button.mega-btn{font-size:14px;padding:16px 24px;border-width:3px;animation:pulse 2s infinite;}
+@keyframes pulse{0%{box-shadow:0 0 10px rgba(0,246,255,.7);}50%{box-shadow:0 0 22px rgba(0,246,255,.9), inset 0 0 6px rgba(0,246,255,.6);}100%{box-shadow:0 0 10px rgba(0,246,255,.7);}}
 
-/* REGISTER MODAL */
 .overlay{position:fixed;inset:0;background:rgba(5,5,16,0.95);display:none;align-items:center;justify-content:center;z-index:100;}
-.modal-box{
-  position:relative;
-  max-width:500px;
-  width:90%;
-  border:3px solid var(--pink);
-  padding:30px 20px;
-  background:#000;
-  box-shadow:0 0 16px rgba(255,47,199,0.35);
-}
+.modal-box{position:relative;max-width:500px;width:90%;border:3px solid var(--pink);padding:30px 20px;background:#000;box-shadow:0 0 16px rgba(255,47,199,0.35);}
 .close-btn{position:absolute;top:10px;right:10px;font-size:16px;color:var(--dim);cursor:pointer;background:none;border:none;padding:5px;}
 .close-btn:hover{color:var(--pink);text-shadow:0 0 6px rgba(255,47,199,.7);box-shadow:none;}
 .modal-msg{font-size:10px;color:var(--pink);margin-bottom:16px;}
 .success-msg{display:none;color:var(--ok);font-size:12px;text-shadow:0 0 6px rgba(34,255,136,.7);margin-top:20px;}
 
-/* FOOTER */
 footer{width:100%;max-width:960px;margin:20px 0;padding:20px;border-top:1px solid var(--dim);font-size:8px;}
 footer a{color:var(--dim);text-decoration:none;transition:color 0.2s;}
 footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 
-/* MOBILE DENSITY */
-@media (max-width: 768px){
-  .panel{padding:24px 16px;}
-  footer{padding:14px;}
-}
-
-/* LAUNCH SCREEN */
-#launch-screen {
-  position:fixed; inset:0;
-  background:#000;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  z-index:9999;
-}
-#launch-screen h1 {
-  font-size:32px;
-  color:#00ffff;
-  text-shadow:0 0 10px #00ffff,0 0 20px #00ffff;
-  margin-bottom:20px;
-}
-#press-enter {
-  font-size:14px;
-  color:#fff;
-  text-shadow:0 0 5px #fff;
-  animation:blink 1s infinite;
-}
-@keyframes blink {
-  0%,50%,100%{opacity:1;}
-  25%,75%{opacity:0;}
-}
+@media (max-width: 768px){.panel{padding:24px 16px;}footer{padding:14px;}}
 </style>
 </head>
 <body>
 
-<!-- Launch Screen -->
+<!-- LAUNCH SCREEN -->
 <div id="launch-screen">
   <h1>GOALSURGE!</h1>
-  <div id="press-enter">PRESS ENTER TO START</div>
+  <div id="press-enter">PRESS ENTER OR CLICK TO START</div>
 </div>
 
 <div class="nav">
@@ -215,7 +111,7 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 <img src="banner1.jpg" class="banner" alt="GOALSURGE! Banner">
 
 <div class="panel">
-  <h1 id="main-title">WELCOME TO GOALSURGE!</h1>
+  <h1>WELCOME TO GOALSURGE!</h1>
   <p class="intro">WORLD CUP 2026 IS COMING. GET SET FOR THE ULTIMATE PREDICTION CHALLENGE.</p>
   <div class="sys">READ THE RULES <a href="rules.html">HERE</a>. ARE YOU READY?</div>
   <button id="registerBtn" class="mega-btn">REGISTER INTEREST</button>
@@ -244,21 +140,25 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 <script>
 'use strict';
 
-// Launch screen logic
+// LAUNCH SCREEN: ENTER OR CLICK
 const launchScreen = document.getElementById('launch-screen');
-const mainTitle = document.getElementById('main-title');
+const nav = document.querySelector('.nav');
+const banner = document.querySelector('.banner');
+const panel = document.querySelector('.panel');
+
+function hideLaunchScreen() {
+  launchScreen.style.display = 'none';
+  nav.style.opacity = '1';
+  banner.style.opacity = '1';
+  panel.style.opacity = '1';
+}
 
 document.addEventListener('keydown', function(e){
-  if(e.key==='Enter'){
-    launchScreen.style.display='none';
-    mainTitle.classList.remove('arcade-flash'); // stop flashing if needed
-  }
+  if(e.key === 'Enter'){ hideLaunchScreen(); }
 });
+launchScreen.addEventListener('click', hideLaunchScreen);
 
-// Flash arcade gradient on main title while launch screen active
-mainTitle.classList.add('arcade-flash');
-
-// Registration modal
+// REGISTER MODAL
 const registerBtn = document.getElementById('registerBtn');
 const regOverlay = document.getElementById('regOverlay');
 const closeBtn = document.getElementById('closeBtn');
@@ -268,36 +168,24 @@ const regFormArea = document.getElementById('modalFormArea');
 const regSuccess = document.getElementById('regSuccess');
 const regError = document.getElementById('regError');
 
-registerBtn.onclick = () => {
-    regOverlay.style.display = 'flex';
-    regEmail.focus();
-};
-
-closeBtn.onclick = () => {
-    regOverlay.style.display = 'none';
-    resetModal();
-};
-
+registerBtn.onclick = () => { regOverlay.style.display = 'flex'; regEmail.focus(); };
+closeBtn.onclick = () => { regOverlay.style.display = 'none'; resetModal(); };
 submitRegBtn.onclick = () => {
-    const email = regEmail.value.trim();
-    if(email.includes('@') && email.length > 5){
-        regFormArea.style.display = 'none';
-        regSuccess.style.display = 'block';
-        regError.textContent = '';
-    } else {
-        regError.textContent = 'INVALID EMAIL DETECTED';
-    }
+  const email = regEmail.value.trim();
+  if(email.includes('@') && email.length > 5){
+    regFormArea.style.display = 'none';
+    regSuccess.style.display = 'block';
+    regError.textContent = '';
+  } else { regError.textContent = 'INVALID EMAIL DETECTED'; }
 };
-
 function resetModal(){
-    setTimeout(() => {
-        regFormArea.style.display = 'block';
-        regSuccess.style.display = 'none';
-        regEmail.value = '';
-        regError.textContent = '';
-    }, 500);
+  setTimeout(()=>{
+    regFormArea.style.display = 'block';
+    regSuccess.style.display = 'none';
+    regEmail.value = '';
+    regError.textContent = '';
+  },500);
 }
 </script>
 </body>
 </html>
- 
