@@ -11,7 +11,7 @@
   --cyan:#00F6FF; --yellow:#FFD60A; --pink:#FF2FC7; --white:#F7F7F2;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8faff;font-family:"Press Start 2P",monospace;text-align:center;display:flex;flex-direction:column;align-items:center;min-height:100vh;overflow:hidden;}
+body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8faff;font-family:"Press Start 2P",monospace;text-align:center;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
 
 /* NAV */
 .nav {
@@ -26,6 +26,7 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
   padding: 0 10px;
   gap: 6px;
 }
+
 .nav a {
   flex: 1;
   font-size: 10px;
@@ -37,7 +38,11 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
   transition: all 0.2s;
   position: relative;
 }
-.nav a:hover { color: var(--cyan); }
+
+.nav a:hover {
+  color: var(--cyan);
+}
+
 .nav a.active {
   color: var(--pink);
   border: 2px solid var(--pink);
@@ -47,9 +52,10 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
               inset 0 0 10px rgba(255,47,199,.2);
   animation: power-surge-pink 1.2s infinite ease-in-out;
 }
+
 @keyframes power-surge-pink {
-  0%,100% { background:#000; box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2);}
-  50% { background:#1a0015; box-shadow:0 0 15px var(--pink),0 0 25px rgba(255,47,199,.3), inset 0 0 20px rgba(255,47,199,.4);}
+  0%, 100% {background:#000; box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2);}
+  50% {background:#1a0015; box-shadow:0 0 15px var(--pink),0 0 25px rgba(255,47,199,.3), inset 0 0 20px rgba(255,47,199,.4);}
 }
 
 /* PANELS & GENERAL */
@@ -70,13 +76,17 @@ h1{
   color:var(--neon);
   text-shadow:0 0 6px rgba(0,246,255,.65);
   line-height:1.4;
+  transition: 0.3s;
 }
-h2{
-  font-size:16px;
-  color:var(--yellow);
-  margin-bottom:14px;
-  text-shadow:0 0 5px rgba(255,214,10,.6);
+h1.arcade-flash {
+  animation: neon-flash 1s infinite alternate;
 }
+@keyframes neon-flash {
+  0% { color: #00f6ff; text-shadow:0 0 6px #00f6ff, 0 0 12px #00f6ff; }
+  50% { color: #ff2fc7; text-shadow:0 0 10px #ff2fc7,0 0 20px #ff2fc7; }
+  100% { color: #00f6ff; text-shadow:0 0 6px #00f6ff,0 0 12px #00f6ff; }
+}
+
 p.intro{font-size:10px;line-height:1.8;margin-bottom:24px;color:#e8faff;}
 .sys{margin:12px 0;font-size:12px;color:var(--warn);line-height:1.8;}
 .sys a {color: inherit; text-decoration: underline; cursor: pointer;}
@@ -170,12 +180,10 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
   z-index:9999;
 }
 #launch-screen h1 {
-  font-family:"Press Start 2P", monospace;
-  font-size:28px;
-  color:#0ff;
-  text-shadow:0 0 10px #0ff,0 0 20px #0ff;
+  font-size:32px;
+  color:#00ffff;
+  text-shadow:0 0 10px #00ffff,0 0 20px #00ffff;
   margin-bottom:20px;
-  animation:flashTitle 1.5s infinite;
 }
 #press-enter {
   font-size:14px;
@@ -186,12 +194,6 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 @keyframes blink {
   0%,50%,100%{opacity:1;}
   25%,75%{opacity:0;}
-}
-@keyframes flashTitle {
-  0%,100% { color:#0ff; text-shadow:0 0 10px #0ff,0 0 20px #0ff;}
-  25% { color:#ff0; text-shadow:0 0 10px #ff0,0 0 20px #ff0;}
-  50% { color:#f0f; text-shadow:0 0 10px #f0f,0 0 20px #f0f;}
-  75% { color:#22ff88; text-shadow:0 0 10px #22ff88,0 0 20px #22ff88;}
 }
 </style>
 </head>
@@ -213,7 +215,7 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 <img src="banner1.jpg" class="banner" alt="GOALSURGE! Banner">
 
 <div class="panel">
-  <h1>WELCOME TO GOALSURGE!</h1>
+  <h1 id="main-title">WELCOME TO GOALSURGE!</h1>
   <p class="intro">WORLD CUP 2026 IS COMING. GET SET FOR THE ULTIMATE PREDICTION CHALLENGE.</p>
   <div class="sys">READ THE RULES <a href="rules.html">HERE</a>. ARE YOU READY?</div>
   <button id="registerBtn" class="mega-btn">REGISTER INTEREST</button>
@@ -242,6 +244,21 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 <script>
 'use strict';
 
+// Launch screen logic
+const launchScreen = document.getElementById('launch-screen');
+const mainTitle = document.getElementById('main-title');
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter'){
+    launchScreen.style.display='none';
+    mainTitle.classList.remove('arcade-flash'); // stop flashing if needed
+  }
+});
+
+// Flash arcade gradient on main title while launch screen active
+mainTitle.classList.add('arcade-flash');
+
+// Registration modal
 const registerBtn = document.getElementById('registerBtn');
 const regOverlay = document.getElementById('regOverlay');
 const closeBtn = document.getElementById('closeBtn');
@@ -280,14 +297,7 @@ function resetModal(){
         regError.textContent = '';
     }, 500);
 }
-
-// Launch screen functionality
-const launchScreen = document.getElementById('launch-screen');
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Enter'){
-    launchScreen.style.display = 'none';
-  }
-});
 </script>
 </body>
 </html>
+ 
