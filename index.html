@@ -7,37 +7,42 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#050510; --panel:#0b0b1f; --neon:#00f6ff; --ok:#22ff88; --warn:#ffcc00; --dim:#666;
-  --cyan:#00F6FF; --yellow:#FFD60A; --pink:#FF2FC7; --white:#F7F7F2;
+  --bg:#050510;
+  --panel:#0b0b1f; 
+  --neon:#00f6ff; 
+  --ok:#22ff88; 
+  --warn:#ffcc00; 
+  --dim:#666;
+  --cyan:#00F6FF;
+  --yellow:#FFD60A; 
+  --pink:#FF2FC7; 
+  --white:#F7F7F2;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8faff;font-family:"Press Start 2P",monospace;text-align:center;display:flex;flex-direction:column;align-items:center;min-height:100vh;}
 
 /* LAUNCH SCREEN */
 #launch-screen {
-  position:fixed;inset:0;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;cursor:pointer;
+ position:fixed;inset:0;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;cursor:pointer;
 }
 #launch-screen h1{
-  font-size:28px;color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 20px var(--cyan);margin-bottom:20px;
+ font-size:28px;color:var(--cyan);text-shadow:0 0 8px var(--cyan),0 0 20px var(--cyan);margin-bottom:20px;
 }
 #press-enter{
-  font-size:12px;color:#fff;text-shadow:0 0 4px #fff;animation:blink 1s infinite;
+ font-size:12px;color:#fff;text-shadow:0 0 4px #fff;animation:blink 1s infinite;
 }
 @keyframes blink{0%,50%,100%{opacity:1;}25%,75%{opacity:0;}}
 
-/* NAV */
+/* NAV - UPDATED TO VERSION 2 STYLE (PINK ACTIVE) */
 .nav {
   width: 100%;
-  max-width: 960px;
+  max-width: 800px;
   display: flex;
   justify-content: space-around;
-  background: transparent;
-  border: none;
-  box-shadow: none;
   margin: 16px auto 10px;
   padding: 0 10px;
   gap: 6px;
-  opacity:0;
+  opacity: 0;
   transition: opacity 0.8s ease;
 }
 
@@ -45,19 +50,28 @@ body{margin:0;background:radial-gradient(circle at top,#0c0c2a,#000);color:#e8fa
   flex: 1;
   font-size: 10px;
   padding: 12px 4px;
-  color: var(--dim);
+  color: #567; /* V2 Style */
   text-decoration: none;
-  background: transparent;
-  border: none;
+  border: 1px solid rgba(0,246,255,.25); /* V2 Style */
+  box-shadow: 0 0 6px rgba(0,246,255,.1); /* V2 Style */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   transition: all 0.2s;
-  position: relative;
+  background: transparent;
 }
 
 .nav a:hover { color: var(--cyan); }
-.nav a.active { color: var(--pink); border: 2px solid var(--pink); background:#000; padding:10px 4px;
-  box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2); animation: power-surge-pink 1.2s infinite ease-in-out; }
-@keyframes power-surge-pink {0%,100%{background:#000;box-shadow:0 0 5px var(--pink), inset 0 0 10px rgba(255,47,199,.2);}
-50%{background:#1a0015; box-shadow:0 0 15px var(--pink),0 0 25px rgba(255,47,199,.3),inset 0 0 20px rgba(255,47,199,.4);}}
+
+/* PINK LIT VERSION OF V2 HEADER */
+.nav a.active { 
+  color: var(--white); 
+  background: var(--pink); 
+  border: 2px solid var(--white); 
+  box-shadow: 0 0 15px var(--pink); 
+  text-shadow: 2px 2px 0px #000;
+}
 
 .banner{max-width:100%;height:auto;display:block;margin-bottom:20px;opacity:0;transition:opacity 1s ease;}
 .panel{width:100%;max-width:960px;background:var(--panel);border:2px solid var(--neon);box-shadow:0 0 18px rgba(0,246,255,.28);padding:30px 20px;margin-bottom:20px;flex:1;opacity:0;transition:opacity 1s ease;}
@@ -73,10 +87,10 @@ input[type="email"]{width:100%;padding:10px;margin:8px 0;background:#000;color:#
 input::placeholder{color:#bcdfe3;}
 input:focus{border-color:var(--neon);box-shadow:0 0 6px rgba(0,246,255,.7), inset 0 0 4px rgba(0,246,255,.4);}
 
-/* SNES STYLE CHOICE BUTTONS */
+/* SNES STYLE CHOICE BUTTONS - ALIGNMENT FIXED */
 .choice-container { 
     display: flex; 
-    flex-direction: column; /* Stacked Vertically */
+    flex-direction: row; /* CHANGED FROM COLUMN TO ROW */
     justify-content: center; 
     align-items: center;
     gap: 20px; 
@@ -86,16 +100,16 @@ input:focus{border-color:var(--neon);box-shadow:0 0 6px rgba(0,246,255,.7), inse
 button.choice-btn {
   padding: 10px 20px;
   font-family: inherit;
-  font-size: 16px; /* Slightly larger text */
-  background: transparent; /* No Box */
-  color: var(--dim); /* Default Dim */
-  border: none; /* No Border */
+  font-size: 16px; 
+  background: transparent; 
+  color: var(--dim);
+  border: none; 
   cursor: pointer;
   position: relative;
   text-transform: uppercase;
-  width: 120px; /* Fixed width to center properly */
+  width: 120px; 
   text-align: left;
-  padding-left: 30px; /* Space for the arrow */
+  padding-left: 30px;
 }
 
 /* THE YELLOW TRIANGLE CURSOR */
@@ -119,8 +133,9 @@ button.choice-btn:hover, button.choice-btn:focus {
   text-shadow: 0 0 5px var(--white);
   outline: none;
 }
-button.choice-btn:hover::before, button.choice-btn:focus::before {
-  opacity: 1; /* Show triangle on hover */
+button.choice-btn:hover::before,
+button.choice-btn:focus::before {
+  opacity: 1; 
 }
 
 /* ANIMATION CLASS FOR SELECTION */
@@ -157,7 +172,7 @@ button.action-btn:disabled {
 .modal-box{position:relative;max-width:500px;width:90%;border:3px solid var(--pink);padding:30px 20px;background:#000;box-shadow:0 0 16px rgba(255,47,199,0.35);}
 .close-btn{position:absolute;top:5px;right:5px;font-size:12px;color:var(--dim);cursor:pointer;background:none;border:1px solid var(--dim);width:24px;height:24px;line-height:22px;text-align:center;padding:0;}
 .close-btn:hover{color:var(--pink);border-color:var(--pink);text-shadow:0 0 6px rgba(255,47,199,.7);}
-.modal-msg{font-size:10px;color:var(--pink);margin-bottom:16px; line-height: 1.8;} /* Added line-height */
+.modal-msg{font-size:10px;color:var(--pink);margin-bottom:16px; line-height: 1.8;} 
 .success-msg{display:none;color:var(--ok);font-size:12px;text-shadow:0 0 6px rgba(34,255,136,.7);margin-top:20px;}
 
 /* CHECKBOX GROUP */
@@ -176,22 +191,21 @@ footer {
     width:100%; max-width:960px; margin:20px 0; padding:20px; 
     border-top:1px solid var(--dim); font-size:8px;
     display: flex; flex-direction: column; align-items: center; gap: 10px;
-    color: var(--dim); /* Force Gray */
+    color: var(--dim);
 }
 footer a{ color: var(--dim); text-decoration:none; transition:color 0.2s; }
 footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 
 @media (min-width: 768px){
-    /* Un-bunch footer on Desktop */
     footer { flex-direction: row; justify-content: center; gap: 20px; }
-    .panel{padding:24px 16px;}
+   .panel{padding:24px 16px;}
 }
 </style>
 </head>
 <body>
 
 <div id="launch-screen">
-  <h1>GOALSURGE!</h1>
+ <h1>GOALSURGE!</h1>
   <div id="press-enter">PRESS ENTER OR CLICK TO START</div>
 </div>
 
@@ -207,7 +221,7 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
 <div class="panel">
   <h1>WELCOME TO GOALSURGE!</h1>
   <p class="intro">WORLD CUP 2026 IS COMING. GET SET FOR THE ULTIMATE PREDICTION CHALLENGE.</p>
-  <div class="sys">READ THE RULES <a href="rules.html">HERE</a>. ARE YOU READY?</div>
+  <div class="sys">ARE YOU READY?</div>
    
   <div class="choice-container">
     <button id="btnYes" class="choice-btn">YES</button>
@@ -228,7 +242,7 @@ footer a:hover{color:var(--neon);text-shadow:0 0 4px rgba(0,246,255,.6);}
     <h2>STAY UPDATED</h2>
     <div class="modal-msg" id="modalFormArea">
       BE THE FIRST TO KNOW WHEN KICK-OFF APPROACHES.
-      <input type="email" id="regEmail" placeholder="ENTER EMAIL ADDRESS">
+      <input type="email" id="regEmail" name="email" placeholder="ENTER EMAIL ADDRESS">
       
       <div class="chk-group">
         <label>
@@ -271,7 +285,7 @@ const banner = document.querySelector('.banner');
 const panel = document.querySelector('.panel');
 
 function hideLaunchScreen() {
-  launchScreen.style.display = 'none';
+ launchScreen.style.display = 'none';
   nav.style.opacity = '1';
   banner.style.opacity = '1';
   panel.style.opacity = '1';
@@ -306,11 +320,11 @@ const closeNo = document.getElementById('closeNo');
 // SNES EFFECT HELPER
 function selectOption(btnElement, callback) {
     // Add the class that triggers the flashing arrow animation
-    btnElement.classList.add('selected');
+   btnElement.classList.add('selected');
     
     // Wait 600ms for the flash to happen "a couple of times"
     setTimeout(() => {
-        btnElement.classList.remove('selected');
+       btnElement.classList.remove('selected');
         callback();
     }, 600);
 }
@@ -318,64 +332,93 @@ function selectOption(btnElement, callback) {
 // 1. CLICK NO
 btnNo.onclick = () => {
   selectOption(btnNo, () => {
-      noOverlay.style.display = 'flex';
+     noOverlay.style.display = 'flex';
   });
 };
 closeNo.onclick = () => {
-  noOverlay.style.display = 'none';
+ noOverlay.style.display = 'none';
 };
 
 // 2. CLICK YES
 btnYes.onclick = () => {
   selectOption(btnYes, () => {
-      regOverlay.style.display = 'flex';
-      regEmail.focus();
+     regOverlay.style.display = 'flex';
+     regEmail.focus();
   });
 };
 closeReg.onclick = () => {
-  regOverlay.style.display = 'none';
+ regOverlay.style.display = 'none';
   resetModal();
 };
 
 // 3. CHECKBOX VALIDATION
 function updateSubmitState() {
   if (chkPrivacy.checked && chkTerms.checked) {
-    submitRegBtn.disabled = false;
+   submitRegBtn.disabled = false;
   } else {
-    submitRegBtn.disabled = true;
+   submitRegBtn.disabled = true;
   }
 }
 
 chkPrivacy.addEventListener('change', updateSubmitState);
 chkTerms.addEventListener('change', updateSubmitState);
 
-// 4. SUBMIT REGISTRATION
+// 4. SUBMIT REGISTRATION (GOOGLE SHEET HOOKUP)
+// Create a Google Sheet, Extensions > Apps Script.
+// Paste: function doPost(e){ return ContentService.createTextOutput("Success"); }
+// Deploy as Web App -> Execute as Me -> Who has access: Anyone.
+// Paste the generated URL below.
+
+const scriptURL = 'INSERT_GOOGLE_SCRIPT_URL_HERE';
+
 submitRegBtn.onclick = () => {
   const email = regEmail.value.trim();
-  // Basic validation
+  
   if(email.includes('@') && email.length > 5){
-    // Mock Submission
-    regFormArea.style.display = 'none';
-    regSuccess.style.display = 'block';
-    regError.textContent = '';
+      // Show loading state if desired (optional)
+      submitRegBtn.textContent = 'SENDING...';
+      submitRegBtn.disabled = true;
+
+      // Prepare Data
+      let formData = new FormData();
+      formData.append('email', email);
+      formData.append('privacy_agreed', 'true');
+      formData.append('terms_agreed', 'true');
+      formData.append('timestamp', new Date().toISOString());
+
+      // Fetch to Google Sheet
+      fetch(scriptURL, { method: 'POST', body: formData })
+      .then(response => {
+           // Success
+           regFormArea.style.display = 'none';
+           regSuccess.style.display = 'block';
+           regError.textContent = '';
+           submitRegBtn.textContent = 'SUBMIT'; // Reset text
+      })
+      .catch(error => {
+           // Error
+           console.error('Error!', error.message);
+           regError.textContent = 'TRANSMISSION ERROR. TRY AGAIN.';
+           submitRegBtn.disabled = false;
+           submitRegBtn.textContent = 'SUBMIT';
+      });
+
   } else {
-    regError.textContent = 'INVALID EMAIL DETECTED';
+   regError.textContent = 'INVALID EMAIL DETECTED';
   }
 };
 
 function resetModal(){
   setTimeout(()=>{
-    regFormArea.style.display = 'block';
-    regSuccess.style.display = 'none';
+   regFormArea.style.display = 'block';
+   regSuccess.style.display = 'none';
     regEmail.value = '';
-    regError.textContent = '';
+   regError.textContent = '';
     chkPrivacy.checked = false;
     chkTerms.checked = false;
-    submitRegBtn.disabled = true;
+   submitRegBtn.disabled = true;
   }, 500);
 }
 </script>
 </body>
 </html>
-
-```
