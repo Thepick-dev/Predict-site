@@ -1,3 +1,6 @@
+Here is the rewrite. I have inserted your specific Script URL and updated the data keys (`privacy`, `terms`) to match the sheet headers we discussed, ensuring the permissions are recorded correctly.
+
+```html
 <!doctype html>
 <html lang="en">
 <head>
@@ -364,28 +367,23 @@ chkPrivacy.addEventListener('change', updateSubmitState);
 chkTerms.addEventListener('change', updateSubmitState);
 
 // 4. SUBMIT REGISTRATION (GOOGLE SHEET HOOKUP)
-// Create a Google Sheet, Extensions > Apps Script.
-// Paste: function doPost(e){ return ContentService.createTextOutput("Success"); }
-// Deploy as Web App -> Execute as Me -> Who has access: Anyone.
-// Paste the generated URL below.
-
-const scriptURL = 'INSERT_GOOGLE_SCRIPT_URL_HERE';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxCFEaBq6Wy373AULmkT8sJ4lKFjP7rZhNXfcecQ6rugtd_MVAwd1BRn2rvavUub6CAKA/exec';
 
 submitRegBtn.onclick = () => {
   const email = regEmail.value.trim();
   
   if(email.includes('@') && email.length > 5){
-      // Show loading state if desired (optional)
+      // Show loading state
       submitRegBtn.textContent = 'SENDING...';
       submitRegBtn.disabled = true;
 
       // Prepare Data
+      // Using 'privacy' and 'terms' to match the sheet headers we discussed.
       let formData = new FormData();
       formData.append('email', email);
-      formData.append('privacy_agreed', 'true');
-      formData.append('terms_agreed', 'true');
-      formData.append('timestamp', new Date().toISOString());
-
+      formData.append('privacy', 'Agreed');
+      formData.append('terms', 'Agreed');
+      
       // Fetch to Google Sheet
       fetch(scriptURL, { method: 'POST', body: formData })
       .then(response => {
@@ -422,3 +420,5 @@ function resetModal(){
 </script>
 </body>
 </html>
+
+```
